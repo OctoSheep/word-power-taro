@@ -1,0 +1,13 @@
+{
+  "miniprogramRoot": "./",
+  "projectname": "word-power",
+  "description": "词力 Word Power",
+  "appid": "wx8423843bd81723cd",
+  "setting": {
+    "urlCheck": true,
+    "es6": false,
+    "postcss": false,
+    "minified": false
+  },
+  "compileType": "miniprogram"
+}
