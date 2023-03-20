@@ -13,7 +13,7 @@
 
 import React, {Component}              from 'react';
 import {Text, View}                    from '@tarojs/components';
-import {Row}                           from '@nutui/nutui-react-taro';
+import {Col, Row}                      from '@nutui/nutui-react-taro';
 import {hexToHSL, hslToHex, randomHex} from '../../utils/color-utils';
 
 import './cover.less';
@@ -38,15 +38,22 @@ class Cover extends Component {
     return (
       <View className={'index'}>
         <Row>
-          <View className={'cover'} style={{backgroundColor: bgColor}}>
-            <Text className={'cover-text'}
-                  style={{color: textColor}}>{coverText}</Text>
-          </View>
+          <Col span={24}>
+            <View className={'cover'}
+                  style={{backgroundColor: bgColor}}>
+              <Text className={'cover-text'}
+                    style={{color: textColor}}>
+                {coverText}
+              </Text>
+            </View>
+          </Col>
         </Row>
         <Row>
-          <View className={'title'}>
-            <Text>{title}</Text>
-          </View>
+          <Col span={24}>
+            <View className={'title'}>
+              <Text>{title}</Text>
+            </View>
+          </Col>
         </Row>
       </View>
     );
