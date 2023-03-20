@@ -25,9 +25,10 @@ class Today extends Component {
     return (
       <View className='index'>
         <Text>今日</Text>
-        <Tabbar bottom>
+        <Tabbar bottom visible={0}>
           <TabbarItem icon={'home'} tabTitle={'今日'}/>
-          <TabbarItem icon={'category'} tabTitle={'词汇书'}/>
+          <TabbarItem icon={'category'} tabTitle={'词汇书'}
+                      href={'../#/pages/glossary/glossary'}/>
           <TabbarItem icon={'my'} tabTitle={'我'}/>
         </Tabbar>
       </View>
