@@ -11,9 +11,14 @@
  *
  */
 
-.cover {
+.cover-index {
+  flex-wrap: wrap;
+  margin: .5em;
+}
+
+.cover-cover {
   height: 15em;
-  border-radius: 1em;
+  border-radius: 1.5em;
   border: 5px double #9999;
   position: relative;
   overflow: hidden;
@@ -25,12 +30,13 @@
   font-stretch: condensed;
   line-height: .8em;
   position: absolute;
-  bottom: -.25em;
-  left: -.15em;
+  bottom: -.2em;
+  left: -.2em;
   word-break: keep-all;
 }
 
-.title {
+.cover-title {
+  width: 100%;
   text-align: center;
   font-size: 1.5em;
   font-weight: normal;

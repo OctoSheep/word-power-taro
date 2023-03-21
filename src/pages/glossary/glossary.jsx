@@ -12,10 +12,11 @@
  */
 
 import {Component}                          from 'react';
-import './glossary.less';
 import {View}                               from '@tarojs/components';
 import {Grid, GridItem, Tabbar, TabbarItem} from '@nutui/nutui-react-taro';
 import {Cover}                              from '../../components/cover/cover';
+
+import './glossary.less';
 
 class Glossary extends Component {
   constructor(props) {
@@ -24,9 +25,9 @@ class Glossary extends Component {
 
   render() {
     return (
-      <View className={'index'}>
-        <Grid className={'grid'} columnNum={2} border={false} center={false}
-              gutter={10}>
+      <View className={'glossary-index'}>
+        <Grid className={'glossary-grid'} columnNum={2} border={false}
+              center={false}>
           <GridItem
             text={
               <Cover title={'四级词汇'} coverText={'CET4'}/>
@@ -63,7 +64,7 @@ class Glossary extends Component {
             }
           />
         </Grid>
-        <Tabbar bottom visible={1}>
+        <Tabbar bottom={true} visible={1}>
           <TabbarItem icon={'home'} tabTitle={'今日'}
                       href={'../#/pages/today/today'}/>
           <TabbarItem icon={'category'} tabTitle={'词汇书'}/>

@@ -13,8 +13,9 @@
 
 import {Component}          from 'react';
 import {Tabbar, TabbarItem} from '@nutui/nutui-react-taro';
-import './today.less';
 import {Text, View}         from '@tarojs/components';
+
+import './today.less';
 
 class Today extends Component {
   constructor(props) {
@@ -23,9 +24,9 @@ class Today extends Component {
 
   render() {
     return (
-      <View className='index'>
+      <View className='today-index'>
         <Text>今日</Text>
-        <Tabbar bottom visible={0}>
+        <Tabbar bottom={true} visible={0}>
           <TabbarItem icon={'home'} tabTitle={'今日'}/>
           <TabbarItem icon={'category'} tabTitle={'词汇书'}
                       href={'../#/pages/glossary/glossary'}/>
