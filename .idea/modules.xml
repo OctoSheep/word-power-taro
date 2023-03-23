@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/word-power.iml" filepath="$PROJECT_DIR$/.idea/word-power.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/word-power-taro.iml" filepath="$PROJECT_DIR$/.idea/word-power-taro.iml" />
     </modules>
   </component>
 </project>

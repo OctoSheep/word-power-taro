@@ -11,66 +11,86 @@
  *
  */
 
-import {Component}                          from 'react';
-import {View}                               from '@tarojs/components';
-import {Grid, GridItem, Tabbar, TabbarItem} from '@nutui/nutui-react-taro';
-import {Cover}                              from '../../components/cover/cover';
+import {Cover} from '../../components/cover/cover';
 
-import './glossary.less';
+import {Component, useState}                         from 'react';
+import {Box, Grid, Sheet}                            from '@mui/joy';
+import {HomeRounded, MenuBookRounded, PersonRounded} from '@mui/icons-material';
+import {BottomNavigation, BottomNavigationAction}    from '@mui/material';
+import Taro                                          from '@tarojs/taro';
 
 class Glossary extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
+    const [value, setValue] = useState('glossary');
+
     return (
-      <View className={'glossary-index'}>
-        <Grid className={'glossary-grid'} columnNum={2} border={false}
-              center={false}>
-          <GridItem
-            text={
-              <Cover title={'四级词汇'} coverText={'CET4'}/>
-            }
-          />
-          <GridItem
-            text={
-              <Cover title={'六级词汇'} coverText={'CET6'}/>
-            }
-          />
-          <GridItem
-            text={
-              <Cover title={'考研词汇'} coverText={'Yan'}/>
-            }
-          />
-          <GridItem
-            text={
-              <Cover title={'四级核心词汇'} coverText={'CET4 Core'}/>
-            }
-          />
-          <GridItem
-            text={
-              <Cover title={'六级核心词汇'} coverText={'CET6 Core'}/>
-            }
-          />
-          <GridItem
-            text={
-              <Cover title={'考研核心词汇'} coverText={'Yan Core'}/>
-            }
-          />
-          <GridItem
-            text={
-              <Cover color={'#096148'}/>
-            }
-          />
+      <Box sx={{
+        pt: 1,
+        pl: 1,
+        pr: 1,
+        pb: 7,
+      }}>
+        <Grid container>
+          <Grid item xs={6}>
+            <Cover title={'四级词汇'} coverText={'CET4'}/>
+          </Grid>
+          <Grid item xs={6}>
+            <Cover title={'六级词汇'} coverText={'CET6'}/>
+          </Grid>
+          <Grid item xs={6}>
+            <Cover title={'考研词汇'} coverText={'Yan'}/>
+          </Grid>
+          <Grid item xs={6}>
+            <Cover title={'四级核心词汇'} coverText={'CET4 Core'}/>
+          </Grid>
+          <Grid item xs={6}>
+            <Cover title={'六级核心词汇'} coverText={'CET6 Core'}/>
+          </Grid>
+          <Grid item xs={6}>
+            <Cover title={'考研核心词汇'} coverText={'Yan Core'}/>
+          </Grid>
+          <Grid item xs={6}>
+            <Cover xs={6} color={'#096148'}/>
+          </Grid>
         </Grid>
-        <Tabbar bottom={true} visible={1}>
-          <TabbarItem icon={'home'} tabTitle={'今日'}
-                      href={'../#/pages/today/today'}/>
-          <TabbarItem icon={'category'} tabTitle={'词汇书'}/>
-          <TabbarItem icon={'my'} tabTitle={'我'}/>
-        </Tabbar>
-      </View>
+        <Sheet sx={{
+          position: 'fixed',
+          bottom:   0,
+          left:     0,
+          right:    0,
+        }} elevation={3}>
+          <BottomNavigation
+            value={value}
+            onChange={(
+              event,
+              newValue,
+            ) => {
+              if (newValue === 'today') {
+                Taro.redirectTo(
+                  {url: '/pages/today/today'},
+                ).then(r => console.log(r));
+              }
+              setValue(newValue);
+            }}
+          >
+            <BottomNavigationAction
+              label={'今日'}
+              value={'today'}
+              icon={<HomeRounded/>}
+            />
+            <BottomNavigationAction
+              label={'词汇书'}
+              value={'glossary'}
+              icon={<MenuBookRounded/>}
+            />
+            <BottomNavigationAction
+              label={'我'}
+              value={'me'}
+              icon={<PersonRounded/>}
+            />
+          </BottomNavigation>
+        </Sheet>
+      </Box>
     );
   }
 }

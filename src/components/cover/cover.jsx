@@ -11,11 +11,11 @@
  *
  */
 
+import './cover.less';
+
 import React, {Component}              from 'react';
 import {Text, View}                    from '@tarojs/components';
 import {hexToHSL, hslToHex, randomHex} from '../../utils/color-utils';
-
-import './cover.less';
 
 class Cover extends Component {
   static defaultProps = {

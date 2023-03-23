@@ -22,9 +22,8 @@
     overflow: hidden;
 }
 .cover-text {
-    font-size: 6em;
+    font-size: 4.5em;
     font-weight: 1000;
-    font-stretch: condensed;
     line-height: 0.8em;
     position: absolute;
     bottom: -0.2em;

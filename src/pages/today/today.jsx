@@ -11,27 +11,56 @@
  *
  */
 
-import {Component}          from 'react';
-import {Tabbar, TabbarItem} from '@nutui/nutui-react-taro';
-import {Text, View}         from '@tarojs/components';
-
-import './today.less';
+import {Component, useState}                         from 'react';
+import {View}                                        from '@tarojs/components';
+import {HomeRounded, MenuBookRounded, PersonRounded} from '@mui/icons-material';
+import {BottomNavigation, BottomNavigationAction}    from '@mui/material';
+import Taro                                          from '@tarojs/taro';
+import {Sheet}                                       from '@mui/joy';
 
 class Today extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
+    const [value, setValue] = useState('today');
+
     return (
-      <View className='today-index'>
-        <Text>今日</Text>
-        <Tabbar bottom={true} visible={0}>
-          <TabbarItem icon={'home'} tabTitle={'今日'}/>
-          <TabbarItem icon={'category'} tabTitle={'词汇书'}
-                      href={'../#/pages/glossary/glossary'}/>
-          <TabbarItem icon={'my'} tabTitle={'我'}/>
-        </Tabbar>
+      <View>
+        <Sheet sx={{
+          position: 'fixed',
+          bottom:   0,
+          left:     0,
+          right:    0,
+        }} elevation={3}>
+          <BottomNavigation
+            value={value}
+            onChange={(
+              event,
+              newValue,
+            ) => {
+              if (newValue === 'glossary') {
+                Taro.redirectTo(
+                  {url: '/pages/glossary/glossary'},
+                ).then(r => console.log(r));
+              }
+              setValue(newValue);
+            }}
+          >
+            <BottomNavigationAction
+              label={'今日'}
+              value={'today'}
+              icon={<HomeRounded/>}
+            />
+            <BottomNavigationAction
+              label={'词汇书'}
+              value={'glossary'}
+              icon={<MenuBookRounded/>}
+            />
+            <BottomNavigationAction
+              label={'我'}
+              value={'me'}
+              icon={<PersonRounded/>}
+            />
+          </BottomNavigation>
+        </Sheet>
       </View>
     );
   }
