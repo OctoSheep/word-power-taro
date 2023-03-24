@@ -11,6 +11,8 @@
  *
  */
 
+const path = require('path');
+
 const config = {
   projectName:     'word-power',
   date:            '2023-3-15',
@@ -24,6 +26,13 @@ const config = {
   sourceRoot:      'src',
   outputRoot:      'dist',
   plugins:         ['@tarojs/plugin-html'],
+  alias:           {
+    '@': path.resolve(
+      __dirname,
+      '..',
+      'src',
+    ),
+  },
   defineConstants: {},
   copy:            {
     patterns: [],
