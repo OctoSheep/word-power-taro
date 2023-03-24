@@ -11,17 +11,25 @@
  *
  */
 
-// noinspection JSUnusedGlobalSymbols
-export default defineAppConfig({
-  pages:  [
-    'pages/today/today',
-    'pages/glossary/glossary',
-    'pages/my/my',
-  ],
-  window: {
-    backgroundTextStyle:          'light',
-    navigationBarBackgroundColor: '#fff',
-    navigationBarTitleText:       'WeChat',
-    navigationBarTextStyle:       'black',
-  },
-});
+import './my.less';
+
+import {Component}  from 'react';
+import {BottomBar}  from '@/components/bottomBar/bottomBar';
+import {Text, View} from '@tarojs/components';
+
+class My extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return (
+      <View className={'my-index'}>
+        <Text>我</Text>
+        <BottomBar visible={2}/>
+      </View>
+    );
+  }
+}
+
+export default My;

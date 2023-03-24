@@ -11,17 +11,6 @@
  *
  */
 
-// noinspection JSUnusedGlobalSymbols
-export default defineAppConfig({
-  pages:  [
-    'pages/today/today',
-    'pages/glossary/glossary',
-    'pages/my/my',
-  ],
-  window: {
-    backgroundTextStyle:          'light',
-    navigationBarBackgroundColor: '#fff',
-    navigationBarTitleText:       'WeChat',
-    navigationBarTextStyle:       'black',
-  },
+export default definePageConfig({
+  navigationBarTitleText: '我',
 });
