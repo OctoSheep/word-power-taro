@@ -18,52 +18,57 @@ import {View}           from '@tarojs/components';
 import {Grid, GridItem} from '@nutui/nutui-react-taro';
 import {Cover}          from '@/components/cover/cover';
 import {BottomBar}      from '@/components/bottomBar/bottomBar';
+import {getGlossaries}  from '@/api/api';
+import Taro             from '@tarojs/taro';
 
 class Glossary extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      glossaries: [],
+      loading:    true,
+    };
+  }
+
+  componentDidMount() {
+    getGlossaries().then((res) => {
+      this.setState({
+        glossaries: res.data,
+        loading:    false,
+      });
+    });
   }
 
   render() {
+    const {glossaries} = this.state;
+
     return (
       <View className={'glossary-index'}>
-        <Grid className={'glossary-grid'} columnNum={2} border={false}
+        <Grid className={'glossary-grid'}
+              columnNum={2}
+              border={false}
               center={false}>
-          <GridItem
-            text={
-              <Cover title={'四级词汇'} coverText={'CET4'}/>
-            }
-          />
-          <GridItem
-            text={
-              <Cover title={'六级词汇'} coverText={'CET6'}/>
-            }
-          />
-          <GridItem
-            text={
-              <Cover title={'考研词汇'} coverText={'Yan'}/>
-            }
-          />
-          <GridItem
-            text={
-              <Cover title={'四级核心词汇'} coverText={'CET4 Core'}/>
-            }
-          />
-          <GridItem
-            text={
-              <Cover title={'六级核心词汇'} coverText={'CET6 Core'}/>
-            }
-          />
-          <GridItem
-            text={
-              <Cover title={'考研核心词汇'} coverText={'Yan Core'}/>
-            }
-          />
-          <GridItem
-            text={
-              <Cover color={'#096148'}/>
-            }
-          />
+          {glossaries.map((
+            glossary,
+            index,
+          ) => {
+            return (
+              <GridItem
+                key={index}
+                text={
+                  <Cover title={glossary.description}
+                         coverText={glossary.name}
+                         loading={this.state.loading}
+                  />
+                }
+                onClick={() => {
+                  Taro.showToast({
+                    title: `${glossary.description}`,
+                  }).catch((err) => {console.log(err);});
+                }}
+              />
+            );
+          })}
         </Grid>
         <BottomBar visible={1}/>
       </View>

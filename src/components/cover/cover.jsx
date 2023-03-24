@@ -24,11 +24,13 @@ class Cover extends Component {
             title,
             coverText,
             color,
+            loading,
           }    = this.props;
     this.state = {
       title:     title || '更多……',
       coverText: coverText || 'More',
       color:     color || randomHex(),
+      loading:   loading || false,
     };
   }
 
@@ -37,15 +39,27 @@ class Cover extends Component {
             title,
             coverText,
             color,
-          }         = this.state;
-    const colorHsl  = hexToHSL(color);
-    const bgColor   = hslToHex([colorHsl[0], colorHsl[1], 30]);
-    const textColor = hslToHex([colorHsl[0], colorHsl[1], 70]);
+            loading,
+          } = this.state;
+
+    let bgColor;
+    let textColor;
+
+    if (!loading) {
+      const colorHsl = hexToHSL(color);
+      bgColor        = hslToHex([colorHsl[0], colorHsl[1], 30]);
+      textColor      = hslToHex([colorHsl[0], colorHsl[1], 70]);
+    } else {
+      bgColor   = hslToHex([0, 0, 30]);
+      textColor = hslToHex([0, 0, 70]);
+    }
+
     return (
       <View className={'cover-index'}>
         <View className={'cover-cover'} style={{backgroundColor: bgColor}}>
           <Text className={'cover-text'}
-                style={{color: textColor}}>
+                style={{color: textColor}}
+          >
             {coverText}
           </Text>
         </View>
