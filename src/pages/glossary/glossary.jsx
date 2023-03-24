@@ -11,12 +11,13 @@
  *
  */
 
-import {Component}                          from 'react';
-import {View}                               from '@tarojs/components';
-import {Grid, GridItem, Tabbar, TabbarItem} from '@nutui/nutui-react-taro';
-import {Cover}                              from '../../components/cover/cover';
-
 import './glossary.less';
+
+import {Component}      from 'react';
+import {View}           from '@tarojs/components';
+import {Grid, GridItem} from '@nutui/nutui-react-taro';
+import {Cover}          from '@/components/cover/cover';
+import {BottomBar}      from '@/components/bottomBar/bottomBar';
 
 class Glossary extends Component {
   constructor(props) {
@@ -64,12 +65,7 @@ class Glossary extends Component {
             }
           />
         </Grid>
-        <Tabbar bottom={true} visible={1}>
-          <TabbarItem icon={'home'} tabTitle={'今日'}
-                      href={'../#/pages/today/today'}/>
-          <TabbarItem icon={'category'} tabTitle={'词汇书'}/>
-          <TabbarItem icon={'my'} tabTitle={'我'}/>
-        </Tabbar>
+        <BottomBar visible={1}/>
       </View>
     );
   }

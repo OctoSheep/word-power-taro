@@ -11,27 +11,34 @@
  *
  */
 
-import React, {Component}              from 'react';
-import {Text, View}                    from '@tarojs/components';
-import {hexToHSL, hslToHex, randomHex} from '../../utils/color-utils';
-
 import './cover.less';
 
+import React, {Component}              from 'react';
+import {Text, View}                    from '@tarojs/components';
+import {hexToHSL, hslToHex, randomHex} from '@/utils/color-utils';
+
 class Cover extends Component {
-  static defaultProps = {
-    title:     '更多……',
-    coverText: 'More',
-    // color: '#096148',
-  };
+  constructor(props) {
+    super(props);
+    const {
+            title,
+            coverText,
+            color,
+          }    = this.props;
+    this.state = {
+      title:     title || '更多……',
+      coverText: coverText || 'More',
+      color:     color || randomHex(),
+    };
+  }
 
   render() {
     const {
             title,
             coverText,
             color,
-          }         = this.props;
-    const newColor  = color || randomHex();
-    const colorHsl  = hexToHSL(newColor);
+          }         = this.state;
+    const colorHsl  = hexToHSL(color);
     const bgColor   = hslToHex([colorHsl[0], colorHsl[1], 30]);
     const textColor = hslToHex([colorHsl[0], colorHsl[1], 70]);
     return (

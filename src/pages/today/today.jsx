@@ -11,11 +11,11 @@
  *
  */
 
-import {Component}          from 'react';
-import {Tabbar, TabbarItem} from '@nutui/nutui-react-taro';
-import {Text, View}         from '@tarojs/components';
-
 import './today.less';
+
+import {Component}  from 'react';
+import {BottomBar}  from '@/components/bottomBar/bottomBar';
+import {Text, View} from '@tarojs/components';
 
 class Today extends Component {
   constructor(props) {
@@ -24,14 +24,9 @@ class Today extends Component {
 
   render() {
     return (
-      <View className='today-index'>
+      <View className={'today-index'}>
         <Text>今日</Text>
-        <Tabbar bottom={true} visible={0}>
-          <TabbarItem icon={'home'} tabTitle={'今日'}/>
-          <TabbarItem icon={'category'} tabTitle={'词汇书'}
-                      href={'../#/pages/glossary/glossary'}/>
-          <TabbarItem icon={'my'} tabTitle={'我'}/>
-        </Tabbar>
+        <BottomBar visible={0}/>
       </View>
     );
   }
