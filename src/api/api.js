@@ -48,9 +48,27 @@ const getGlossaries = () => {
   );
 };
 
-const getGlossary = (name) => {
+const getGlossary = (glossaryName) => {
   return request(
-    'glossaries/' + name,
+    'glossaries/' + glossaryName,
+    'GET',
+    {},
+  );
+};
+
+const getWords = (
+  glossaryName,
+  word,
+  id,
+) => {
+  let url = 'words/' + glossaryName;
+  if (id) {
+    url += '?id=' + id;
+  } else if (word) {
+    url += '?word=' + word;
+  }
+  return request(
+    url,
     'GET',
     {},
   );
@@ -59,4 +77,5 @@ const getGlossary = (name) => {
 export {
   getGlossaries,
   getGlossary,
+  getWords,
 };
