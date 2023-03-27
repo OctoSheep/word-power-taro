@@ -13,22 +13,65 @@
 
 import './today.less';
 
-import {Component}  from 'react';
-import {BottomBar}  from '@/components/bottomBar/bottomBar';
-import {Text, View} from '@tarojs/components';
+import {Component}                            from 'react';
+import {Text, View}                           from '@tarojs/components';
+import {getGlossaries, getGlossary, getWords} from '@/api/api';
+import {Skeleton}                             from '@nutui/nutui-react-taro';
 
 class Today extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      words:   [],
+      loading: true,
+    };
+  }
+
+  componentDidMount() {
+    getGlossaries().then((glossaries) => {
+      getGlossary(glossaries.data[0].name).then((glossary) => {
+        getWords(glossary.data.name).then((words) => {
+          this.setState({
+            words:   words.data,
+            loading: false,
+          });
+        });
+      });
+    });
   }
 
   render() {
-    return (
-      <View className={'today-index'}>
-        <Text>今日</Text>
-        <BottomBar visible={0}/>
-      </View>
-    );
+    const {
+            words,
+            loading,
+          } = this.state;
+    if (!loading) {
+      // noinspection JSUnresolvedVariable
+      return (
+        <View className={'today-index'}>
+          <Text>{`${words[0].word}`}</Text>
+          <br/>
+          <Text>{`${words[0].phonetic_uk}`}</Text>
+          <br/>
+          <Text>{`${words[0].phonetic_us}`}</Text>
+          <br/>
+          <Text>{`${words[0].translation[0].part_of_speech}`}</Text>
+          <br/>
+          <Text>{`${words[0].translation[0].definition}`}</Text>
+        </View>
+      );
+    } else {
+      return (
+        <View className={'today-index'}>
+          <Skeleton className={'today-skeleton'}
+                    width={'300px'}
+                    height={'15px'}
+                    animated={true}
+                    row={3}
+          />
+        </View>
+      );
+    }
   }
 }
 

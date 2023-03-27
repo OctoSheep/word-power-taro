@@ -26,17 +26,21 @@ class BottomBar extends Component {
   }
 
   handleChange(active) {
+    let url = 'pages/';
+    if (process.env.TARO_ENV === 'weapp') {
+      url = '../';
+    }
     if (active === 0) {
       Taro.redirectTo({
-        url: 'pages/today/today',
+        url: url + 'today/today',
       }).catch(r => console.log(r));
     } else if (active === 1) {
       Taro.redirectTo({
-        url: 'pages/glossary/glossary',
+        url: url + 'glossary/glossary',
       }).catch(r => console.log(r));
     } else if (active === 2) {
       Taro.redirectTo({
-        url: 'pages/my/my',
+        url: url + 'my/my',
       }).catch(r => console.log(r));
     }
     this.setState({

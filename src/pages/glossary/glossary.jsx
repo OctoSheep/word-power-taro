@@ -17,7 +17,6 @@ import {Component}                from 'react';
 import {View}                     from '@tarojs/components';
 import {Grid, GridItem, Skeleton} from '@nutui/nutui-react-taro';
 import {Cover}                    from '@/components/cover/cover';
-import {BottomBar}                from '@/components/bottomBar/bottomBar';
 import {getGlossaries}            from '@/api/api';
 import Taro                       from '@tarojs/taro';
 
@@ -48,10 +47,10 @@ class Glossary extends Component {
     if (!loading) {
       return (
         <View className={'glossary-index'}>
-          <Grid className={'glossary-grid'}
-                columnNum={2}
-                border={false}
-                center={false}
+          <Grid
+            columnNum={2}
+            border={false}
+            center={false}
           >{glossaries.map((
             glossary,
             index,
@@ -74,7 +73,6 @@ class Glossary extends Component {
             );
           })}
           </Grid>
-          <BottomBar visible={1}/>
         </View>
       );
     } else {

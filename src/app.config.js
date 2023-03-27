@@ -11,13 +11,32 @@
  *
  */
 
-// noinspection JSUnusedGlobalSymbols
+// noinspection JSUnusedGlobalSymbols,SpellCheckingInspection
 export default defineAppConfig({
   pages:  [
     'pages/today/today',
     'pages/glossary/glossary',
     'pages/my/my',
   ],
+  tabBar: {
+    list: [
+      {
+        pagePath:         'pages/today/today',
+        text:             '今日',
+        iconPath:         'assets/images/home_FILL0_wght500_GRAD-25_opsz48.png',
+        selectedIconPath: 'assets/images/home_FILL1_wght500_GRAD-25_opsz48.png',
+      }, {
+        pagePath:         'pages/glossary/glossary',
+        text:             '词汇书',
+        iconPath:         'assets/images/menu_book_FILL0_wght500_GRAD-25_opsz48.png',
+        selectedIconPath: 'assets/images/menu_book_FILL1_wght500_GRAD-25_opsz48.png',
+      }, {
+        pagePath:         'pages/my/my',
+        text:             '我',
+        iconPath:         'assets/images/person_FILL0_wght500_GRAD-25_opsz48.png',
+        selectedIconPath: 'assets/images/person_FILL1_wght500_GRAD-25_opsz48.png',
+      }],
+  },
   window: {
     backgroundTextStyle:          'light',
     navigationBarBackgroundColor: '#fff',

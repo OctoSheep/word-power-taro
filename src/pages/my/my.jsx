@@ -14,7 +14,6 @@
 import './my.less';
 
 import {Component}  from 'react';
-import {BottomBar}  from '@/components/bottomBar/bottomBar';
 import {Text, View} from '@tarojs/components';
 
 class My extends Component {
@@ -26,7 +25,6 @@ class My extends Component {
     return (
       <View className={'my-index'}>
         <Text>我</Text>
-        <BottomBar visible={2}/>
       </View>
     );
   }
