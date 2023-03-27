@@ -13,13 +13,13 @@
 
 import './glossary.less';
 
-import {Component}      from 'react';
-import {View}           from '@tarojs/components';
-import {Grid, GridItem} from '@nutui/nutui-react-taro';
-import {Cover}          from '@/components/cover/cover';
-import {BottomBar}      from '@/components/bottomBar/bottomBar';
-import {getGlossaries}  from '@/api/api';
-import Taro             from '@tarojs/taro';
+import {Component}                from 'react';
+import {View}                     from '@tarojs/components';
+import {Grid, GridItem, Skeleton} from '@nutui/nutui-react-taro';
+import {Cover}                    from '@/components/cover/cover';
+import {BottomBar}                from '@/components/bottomBar/bottomBar';
+import {getGlossaries}            from '@/api/api';
+import Taro                       from '@tarojs/taro';
 
 class Glossary extends Component {
   constructor(props) {
@@ -40,15 +40,19 @@ class Glossary extends Component {
   }
 
   render() {
-    const {glossaries} = this.state;
+    const {
+            glossaries,
+            loading,
+          } = this.state;
 
-    return (
-      <View className={'glossary-index'}>
-        <Grid className={'glossary-grid'}
-              columnNum={2}
-              border={false}
-              center={false}>
-          {glossaries.map((
+    if (!loading) {
+      return (
+        <View className={'glossary-index'}>
+          <Grid className={'glossary-grid'}
+                columnNum={2}
+                border={false}
+                center={false}
+          >{glossaries.map((
             glossary,
             index,
           ) => {
@@ -58,7 +62,7 @@ class Glossary extends Component {
                 text={
                   <Cover title={glossary.description}
                          coverText={glossary.name}
-                         loading={this.state.loading}
+                         loading={loading}
                   />
                 }
                 onClick={() => {
@@ -69,10 +73,22 @@ class Glossary extends Component {
               />
             );
           })}
-        </Grid>
-        <BottomBar visible={1}/>
-      </View>
-    );
+          </Grid>
+          <BottomBar visible={1}/>
+        </View>
+      );
+    } else {
+      return (
+        <View className={'glossary-index'}>
+          <Skeleton className={'glossary-skeleton'}
+                    width={'300px'}
+                    height={'15px'}
+                    animated={true}
+                    row={3}
+          />
+        </View>
+      );
+    }
   }
 }
 

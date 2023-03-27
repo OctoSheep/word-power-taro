@@ -56,12 +56,12 @@ class Cover extends Component {
 
     return (
       <View className={'cover-index'}>
-        <View className={'cover-cover'} style={{backgroundColor: bgColor}}>
-          <Text className={'cover-text'}
-                style={{color: textColor}}
-          >
-            {coverText}
-          </Text>
+        <View className={'cover-cover'}
+              style={{backgroundColor: bgColor}}
+        ><Text className={'cover-text'}
+               style={{color: textColor}}
+        >{coverText}
+        </Text>
         </View>
         <View className={'cover-title'}>
           <Text>
