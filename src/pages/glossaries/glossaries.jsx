@@ -11,7 +11,7 @@
  *
  */
 
-import './glossary.less';
+import './glossaries.less';
 
 import {Component}                from 'react';
 import {View}                     from '@tarojs/components';
@@ -20,7 +20,7 @@ import {Cover}                    from '@/components/cover/cover';
 import {getGlossaries}            from '@/api/api';
 import Taro                       from '@tarojs/taro';
 
-class Glossary extends Component {
+class Glossaries extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -46,7 +46,7 @@ class Glossary extends Component {
 
     if (!loading) {
       return (
-        <View className={'glossary-index'}>
+        <View className={'glossaries-index'}>
           <Grid
             columnNum={2}
             border={false}
@@ -77,8 +77,8 @@ class Glossary extends Component {
       );
     } else {
       return (
-        <View className={'glossary-index'}>
-          <Skeleton className={'glossary-skeleton'}
+        <View className={'glossaries-index'}>
+          <Skeleton className={'glossaries-skeleton'}
                     width={'300px'}
                     height={'15px'}
                     animated={true}
@@ -90,4 +90,4 @@ class Glossary extends Component {
   }
 }
 
-export default Glossary;
+export default Glossaries;

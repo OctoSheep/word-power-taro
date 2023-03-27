@@ -15,7 +15,7 @@
 export default defineAppConfig({
   pages:  [
     'pages/today/today',
-    'pages/glossary/glossary',
+    'pages/glossaries/glossaries',
     'pages/my/my',
   ],
   tabBar: {
@@ -26,7 +26,7 @@ export default defineAppConfig({
         iconPath:         'assets/images/home_FILL0_wght500_GRAD-25_opsz48.png',
         selectedIconPath: 'assets/images/home_FILL1_wght500_GRAD-25_opsz48.png',
       }, {
-        pagePath:         'pages/glossary/glossary',
+        pagePath:         'pages/glossaries/glossaries',
         text:             '词汇书',
         iconPath:         'assets/images/menu_book_FILL0_wght500_GRAD-25_opsz48.png',
         selectedIconPath: 'assets/images/menu_book_FILL1_wght500_GRAD-25_opsz48.png',
