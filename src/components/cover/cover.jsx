@@ -15,7 +15,7 @@ import './cover.less';
 
 import React, {Component}              from 'react';
 import {Text, View}                    from '@tarojs/components';
-import {hexToHSL, hslToHex, randomHex} from '@/utils/color-utils';
+import {hexToHsl, hslToHex, randomHex} from '@/utils/color-utils';
 
 class Cover extends Component {
   constructor(props) {
@@ -39,7 +39,7 @@ class Cover extends Component {
             color,
           } = this.state;
 
-    const colorHsl  = hexToHSL(color);
+    const colorHsl  = hexToHsl(color);
     const bgColor   = hslToHex([colorHsl[0], colorHsl[1], 30]);
     const textColor = hslToHex([colorHsl[0], colorHsl[1], 70]);
     return (

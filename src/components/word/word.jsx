@@ -15,7 +15,7 @@ import './word.less';
 
 import {Component}                     from 'react';
 import {Image, Text, View}             from '@tarojs/components';
-import {hexToHSL, hslToHex, randomHex} from '@/utils/color-utils';
+import {hexToHsl, hslToHex, randomHex} from '@/utils/color-utils';
 
 const right_arrow_url = require('@/assets/images/arrow_right_FILL0_wght500_GRAD-25_opsz48.svg');
 
@@ -45,7 +45,7 @@ class Word extends Component {
       4,
       '0',
     );
-    const colorHsl  = hexToHSL(color);
+    const colorHsl  = hexToHsl(color);
     const bgColor   = hslToHex([colorHsl[0], colorHsl[1], 90]);
     const textColor = hslToHex([colorHsl[0], colorHsl[1], 20]);
     // noinspection SpellCheckingInspection

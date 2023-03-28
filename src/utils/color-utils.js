@@ -11,7 +11,7 @@
  *
  */
 
-function hexToHSL(hex) {
+function hexToHsl(hex) {
   let r = parseInt(
     hex.slice(
       1,
@@ -147,7 +147,7 @@ function randomHex() {
 }
 
 module.exports = {
-  hexToHSL,
+  hexToHsl,
   hslToHex,
   randomHex,
 };
