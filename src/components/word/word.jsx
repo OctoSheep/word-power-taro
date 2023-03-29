@@ -59,6 +59,7 @@ class Word extends Component {
 
   render() {
     const {
+            glossaryName,
             index,
             word,
             color,
@@ -76,8 +77,8 @@ class Word extends Component {
     return (
       <View className={'word-index'}
             onClick={() => {
-              Taro.showToast({
-                title: `${word}`,
+              Taro.navigateTo({
+                url: `/pages/word-detail/word-detail?glossaryName=${glossaryName}&wordName=${word}`,
               }).catch((err) => {
                 console.log(err);
               });
@@ -93,15 +94,15 @@ class Word extends Component {
         >{word}
         </Text>
         <View className={'word-mask'}/>
-          <View className={'word-arrow'}>
-            <Image className={process.env.TARO_ENV === 'weapp'
-                              ? 'word-arrow-image-weapp'
-                              : 'word-arrow-image-h5'}
-                   src={right_arrow_url}
-                   svg={true}
-            />
-          </View>
+        <View className={'word-arrow'}>
+          <Image className={process.env.TARO_ENV === 'weapp'
+                            ? 'word-arrow-image-weapp'
+                            : 'word-arrow-image-h5'}
+                 src={right_arrow_url}
+                 svg={true}
+          />
         </View>
+      </View>
       </View>
     );
   }

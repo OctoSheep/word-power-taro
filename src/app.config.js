@@ -18,6 +18,7 @@ export default defineAppConfig({
     'pages/glossaries/glossaries',
     'pages/my/my',
     'pages/glossary-detail/glossary-detail',
+    'pages/word-detail/word-detail',
   ],
   tabBar: {
     list: [
