@@ -45,33 +45,37 @@ class Glossaries extends Component {
           } = this.state;
 
     if (!loading) {
+      const glossaryElements = glossaries.map((
+        glossary,
+        index,
+      ) => {
+        return (
+          <GridItem
+            key={index}
+            text={
+              <Cover
+                title={glossary.description}
+                coverText={glossary.name}
+              />
+            }
+            onClick={() => {
+              Taro.showToast({
+                title: `${glossary.description}`,
+              }).catch((err) => {
+                console.log(err);
+              });
+            }}
+          />
+        );
+      });
+
       return (
         <View className={'glossaries-index'}>
           <Grid
             columnNum={2}
             border={false}
             center={false}
-          >{glossaries.map((
-            glossary,
-            index,
-          ) => {
-            return (
-              <GridItem
-                key={index}
-                text={
-                  <Cover title={glossary.description}
-                         coverText={glossary.name}
-                         loading={loading}
-                  />
-                }
-                onClick={() => {
-                  Taro.showToast({
-                    title: `${glossary.description}`,
-                  }).catch((err) => {console.log(err);});
-                }}
-              />
-            );
-          })}
+          >{glossaryElements}
           </Grid>
         </View>
       );
