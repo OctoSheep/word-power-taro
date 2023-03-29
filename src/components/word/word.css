@@ -11,69 +11,61 @@
  *
  */
 .word-index {
-    flex-wrap: wrap;
-    margin: 0.5em;
+  flex-wrap: wrap;
+  margin: 0.5em;
 }
-
 .word-container {
-    height: 4em;
-    border-radius: 1em;
-    border: 5px double;
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
+  height: 4em;
+  border-radius: 1em;
+  border: 5px double;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
 }
-
 .word-index-text {
-    font-size: 7em;
-    font-weight: 1000;
-    font-stretch: condensed;
-    font-family: monospace;
-    line-height: 1em;
-    position: absolute;
-    bottom: -0.4em;
-    word-break: keep-all;
-    text-align: left;
-    z-index: -1;
+  font-size: 7em;
+  font-weight: 1000;
+  font-stretch: condensed;
+  font-family: monospace;
+  line-height: 1em;
+  position: absolute;
+  bottom: -0.4em;
+  word-break: keep-all;
+  text-align: left;
+  z-index: -1;
 }
-
 .word-text {
-    font-size: 2.5em;
-    font-weight: 500;
-    position: absolute;
-    line-height: 0;
-    left: 0.5em;
-    text-align: left;
-    z-index: 0;
+  font-size: 2.5em;
+  font-weight: 500;
+  position: absolute;
+  line-height: 0;
+  left: 0.5em;
+  text-align: left;
+  z-index: 0;
 }
-
 .word-mask {
-    height: 100%;
-    width: 100%;
-    position: absolute;
-    right: 0;
-    text-align: right;
-    z-index: 1;
-    background-image: linear-gradient(to right, transparent 70%, white 90%);
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  right: 0;
+  text-align: right;
+  z-index: 1;
+  background-image: linear-gradient(to right, transparent 70%, white 90%);
 }
-
 .word-arrow {
-    position: absolute;
-    line-height: 0;
-    right: 0;
-    z-index: 2;
+  position: absolute;
+  line-height: 0;
+  right: 0;
+  z-index: 2;
 }
-
 .word-arrow-image-h5 {
-    height: 3em;
-    width: 3em;
-    display: inline;
+  height: 3em;
+  width: 3em;
+  display: inline;
 }
-
 .word-arrow-image-weapp {
-    height: 3em;
-    width: 3em;
+  height: 3em;
+  width: 3em;
 }
-
 /*# sourceMappingURL=word.css.map */

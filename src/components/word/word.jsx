@@ -16,6 +16,7 @@ import './word.less';
 import {Component}                     from 'react';
 import {Image, Text, View}             from '@tarojs/components';
 import {hexToHsl, hslToHex, randomHex} from '@/utils/color-utils';
+import {getWords}                      from '@/api/api';
 
 const right_arrow_url = require('@/assets/images/arrow_right_FILL0_wght500_GRAD-25_opsz48.svg');
 
@@ -23,15 +24,36 @@ class Word extends Component {
   constructor(props) {
     super(props);
     const {
-            index,
-            word,
+            glossaryName,
+            id,
             color,
           }    = this.props;
     this.state = {
-      index: index || 1,
-      word:  word || 'telecommunications',
-      color: color || randomHex(),
+      glossaryName: glossaryName || '',
+      id:           id || '',
+      index:        0,
+      word:         'loading...',
+      color:        color || randomHex(),
     };
+  }
+
+  componentDidMount() {
+    const {
+            glossaryName,
+            id,
+          } = this.state;
+    getWords(
+      glossaryName,
+      null,
+      id,
+    ).then((res) => {
+      this.setState({
+        index: res.data[0].index,
+        word:  res.data[0].word,
+      });
+    }).catch((err) => {
+      console.log(err);
+    });
   }
 
   render() {
@@ -48,6 +70,7 @@ class Word extends Component {
     const colorHsl  = hexToHsl(color);
     const bgColor   = hslToHex([colorHsl[0], colorHsl[1], 90]);
     const textColor = hslToHex([colorHsl[0], colorHsl[1], 20]);
+
     // noinspection SpellCheckingInspection
     return (
       <View className={'word-index'}>

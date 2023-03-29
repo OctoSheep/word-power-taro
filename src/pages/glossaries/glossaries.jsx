@@ -59,8 +59,8 @@ class Glossaries extends Component {
               />
             }
             onClick={() => {
-              Taro.showToast({
-                title: `${glossary.description}`,
+              Taro.navigateTo({
+                url: `/pages/glossary/glossary?glossaryName=${glossary.name}&glossaryDescription=${glossary.description}`,
               }).catch((err) => {
                 console.log(err);
               });

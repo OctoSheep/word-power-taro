@@ -13,10 +13,11 @@
 
 // noinspection JSUnusedGlobalSymbols,SpellCheckingInspection
 export default defineAppConfig({
-  pages:  [
+  pages: [
     'pages/today/today',
     'pages/glossaries/glossaries',
     'pages/my/my',
+    'pages/glossary/glossary',
   ],
   tabBar: {
     list: [
