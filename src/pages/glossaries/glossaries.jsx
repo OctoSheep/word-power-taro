@@ -13,11 +13,11 @@
 
 import './glossaries.less';
 
-import {Component}                from 'react';
-import {View}                     from '@tarojs/components';
-import {Grid, GridItem, Skeleton} from '@nutui/nutui-react-taro';
-import {Cover}                    from '@/components/cover/cover';
-import {getGlossaries}            from '@/api/api';
+import {Component}                        from 'react';
+import {View}                             from '@tarojs/components';
+import {Button, Grid, GridItem, Skeleton} from '@nutui/nutui-react-taro';
+import {Cover}                            from '@/components/cover/cover';
+import {getGlossaries}                    from '@/api/api';
 
 class Glossaries extends Component {
   constructor(props) {
@@ -69,6 +69,17 @@ class Glossaries extends Component {
             center={false}
           >{glossaryElements}
           </Grid>
+          <Button className={'glossaries-refresh-button'}
+                  plain={true}
+                  type='info'
+                  onClick={() => {
+                    this.setState({
+                      loading: true,
+                    });
+                    this.componentDidMount();
+                  }}
+          >刷新
+          </Button>
         </View>
       );
     } else {
