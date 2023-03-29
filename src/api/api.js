@@ -25,9 +25,9 @@ const request = (
     reject,
   ) => {
     Taro.request({
-      url: BASE_URL + url,
+      url:    BASE_URL + url,
       method: method,
-      data: data,
+      data:   data,
     }).then(res => {
       if (res.statusCode - 200 < 100) {
         resolve(res.data);
