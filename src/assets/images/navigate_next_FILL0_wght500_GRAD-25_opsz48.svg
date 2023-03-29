@@ -1,0 +1,16 @@
+<!--
+  - Copyright (c) 2023. OctoSheep
+  -
+  - This file is part of Word Power.
+  -
+  - Word Power is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or any later version.
+  -
+  - Word Power is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+  -
+  - You should have received a copy of the GNU General Public License along with Word Power. If not, see <https://www.gnu.org/licenses/>.
+  -
+  -->
+
+<svg xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 96 960 960" width="48">
+    <path d="M352.63 794.37q-9.195-10.696-9.695-23.62-.5-12.924 9.63-23.054L525.261 575 351.565 401.304q-9.13-9.13-8.63-23.554.5-14.424 9.695-23.62 10.696-10.695 23.37-10.195 12.674.5 22.729 10.054L596.37 552.13q4.978 5.059 7.587 10.656 2.608 5.597 2.608 12.254 0 6.657-2.608 12.254-2.609 5.597-7.587 10.576L399.729 794.511q-10.055 10.054-23.229 9.554t-23.87-9.695Z"/>
+</svg>

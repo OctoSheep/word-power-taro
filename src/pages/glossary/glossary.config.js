@@ -11,25 +11,6 @@
  *
  */
 
-.glossary-index {
-  text-align: center;
-}
-
-.glossary-skeleton {
-  margin-top: 1em;
-}
-
-.glossary-word {
-  margin: .5em;
-}
-
-.glossary-pagination {
-  display: flex;
-  justify-content: center;
-  margin: .5em;
-}
-
-.glossary-pagination-arrow {
-  height: 25px;
-  width: 25px;
-}
+export default definePageConfig({
+  navigationBarTitleText: '词汇书',
+});

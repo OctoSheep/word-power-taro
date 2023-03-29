@@ -11,25 +11,30 @@
  *
  */
 
-import {Component}          from 'react';
-import {getGlossary}        from '@/api/api';
-import {View}               from '@tarojs/components';
-import {Word}               from '@/components/word/word';
-import {getCurrentInstance} from '@tarojs/runtime';
-import {Skeleton}           from '@nutui/nutui-react-taro';
+import './glossary.less';
+
+import {Component}            from 'react';
+import {getGlossary}          from '@/api/api';
+import {Image, View}          from '@tarojs/components';
+import {Word}                 from '@/components/word/word';
+import {getCurrentInstance}   from '@tarojs/runtime';
+import {Pagination, Skeleton} from '@nutui/nutui-react-taro';
+import Taro                   from '@tarojs/taro';
+
+const ITEMS_PER_PAGE = 50;
+
+const prev_arrow_url = require('@/assets/images/navigate_before_FILL0_wght500_GRAD-25_opsz48.svg');
+const next_arrow_url = require('@/assets/images/navigate_next_FILL0_wght500_GRAD-25_opsz48.svg');
 
 class Glossary extends Component {
-  $instance = getCurrentInstance();
-
-  config = {
-    navigationBarTitleText: this.$instance.router.params.glossaryDescription,
-  };
+  routerParams = getCurrentInstance().router.params;
 
   constructor(props) {
     super(props);
     this.state = {
-      glossaryName: this.$instance.router.params.glossaryName,
+      glossaryName: this.routerParams.glossaryName,
       wordIds:      [],
+      currentPage:  1,
       loading:      true,
     };
   }
@@ -37,12 +42,22 @@ class Glossary extends Component {
   componentDidMount() {
     const {glossaryName} = this.state;
     getGlossary(glossaryName).then((res) => {
-      console.log(res);
       // noinspection JSUnresolvedVariable
       this.setState({
         wordIds: res.data.vocabularies,
         loading: false,
       });
+    });
+    Taro.setNavigationBarTitle({
+      title: decodeURIComponent(this.routerParams.glossaryDescription.toString()),
+    }).catch((err) => {
+      console.log(err);
+    });
+  }
+
+  handlePageChange(page) {
+    this.setState({
+      currentPage: page,
     });
   }
 
@@ -50,23 +65,63 @@ class Glossary extends Component {
     const {
             glossaryName,
             wordIds,
+            currentPage,
             loading,
           } = this.state;
 
     if (!loading) {
-      const wordElements = wordIds.map((
+      const totalWords = wordIds.length;
+      const newWordIds = wordIds.slice(
+        (currentPage - 1) * ITEMS_PER_PAGE,
+        currentPage * ITEMS_PER_PAGE,
+      );
+
+      const wordElements = newWordIds.map((
         wordId,
         index,
       ) => {
         return (
-          <Word glossaryName={glossaryName} id={wordId} key={index}/>
+          <Word
+            glossaryName={glossaryName}
+            id={wordId}
+            key={index}
+          />
         );
       });
 
+      const pagination = (
+        <Pagination className={'glossary-pagination'}
+                    modelValue={currentPage}
+                    totalItems={totalWords}
+                    showPageSize={5}
+                    itemsPerPage={ITEMS_PER_PAGE}
+                    prevText={
+                      <Image className={'glossary-pagination-arrow'}
+                             src={prev_arrow_url}
+                             svg={true}
+                      />
+                    }
+                    nextText={
+                      <Image className={'glossary-pagination-arrow'}
+                             src={next_arrow_url}
+                             svg={true}
+                      />
+                    }
+                    onChange={(page) => {
+                      this.handlePageChange(page);
+                    }}
+        />
+      );
+
       return (
         <View className={'glossary-index'}>
-          {/*<Word glossaryName={glossaryName} id={wordIds[0]}/>*/}
-          {wordElements}
+          {pagination}
+          <View className={'glossary-word'}
+                key={currentPage}
+          >
+            {wordElements}
+          </View>
+          {pagination}
         </View>
       );
     } else {

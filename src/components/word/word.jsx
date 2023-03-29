@@ -17,6 +17,7 @@ import {Component}                     from 'react';
 import {Image, Text, View}             from '@tarojs/components';
 import {hexToHsl, hslToHex, randomHex} from '@/utils/color-utils';
 import {getWords}                      from '@/api/api';
+import Taro                            from '@tarojs/taro';
 
 const right_arrow_url = require('@/assets/images/arrow_right_FILL0_wght500_GRAD-25_opsz48.svg');
 
@@ -73,18 +74,25 @@ class Word extends Component {
 
     // noinspection SpellCheckingInspection
     return (
-      <View className={'word-index'}>
-        <View className={'word-container'}
-              style={{borderColor: textColor}}
-        ><Text className={'word-index-text'}
-               style={{color: bgColor}}
-        >{indexText}
+      <View className={'word-index'}
+            onClick={() => {
+              Taro.showToast({
+                title: `${word}`,
+              }).catch((err) => {
+                console.log(err);
+              });
+            }}
+      ><View className={'word-container'}
+             style={{borderColor: textColor}}
+      ><Text className={'word-index-text'}
+             style={{color: bgColor}}
+      >{indexText}
+      </Text>
+        <Text className={'word-text'}
+              style={{color: textColor}}
+        >{word}
         </Text>
-          <Text className={'word-text'}
-                style={{color: textColor}}
-          >{word}
-          </Text>
-          <View className={'word-mask'}/>
+        <View className={'word-mask'}/>
           <View className={'word-arrow'}>
             <Image className={process.env.TARO_ENV === 'weapp'
                               ? 'word-arrow-image-weapp'
