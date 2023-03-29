@@ -14,7 +14,6 @@
     flex-wrap: wrap;
     margin: 0.5em;
 }
-
 .word-container {
     height: 4em;
     border-radius: 1em;
@@ -24,7 +23,6 @@
     display: flex;
     align-items: center;
 }
-
 .word-index-text {
     font-size: 7em;
     font-weight: 1000;
@@ -37,7 +35,6 @@
     text-align: left;
     z-index: -1;
 }
-
 .word-text {
     font-size: 2.5em;
     font-weight: 500;
@@ -47,7 +44,6 @@
     text-align: left;
     z-index: 0;
 }
-
 .word-mask {
     height: 100%;
     width: 100%;
@@ -57,14 +53,12 @@
     z-index: 1;
     background-image: linear-gradient(to right, transparent 70%, white 90%);
 }
-
 .word-arrow {
     position: absolute;
     line-height: 0;
     right: 0;
     z-index: 2;
 }
-
 .word-arrow-image-h5 {
     height: 3em;
     width: 3em;
@@ -76,4 +70,10 @@
     width: 3em;
 }
 
+.word-skeleton {
+    position: absolute;
+    left: 1em;
+    bottom: 1em;
+    line-height: 0;
+}
 /*# sourceMappingURL=word.css.map */

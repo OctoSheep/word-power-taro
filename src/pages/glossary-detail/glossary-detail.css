@@ -13,15 +13,12 @@
 .glossary-index {
     text-align: center;
 }
-
 .glossary-skeleton {
     margin-top: 1em;
 }
-
 .glossary-word {
     margin: 0.5em;
 }
-
 .glossary-pagination {
     display: flex;
     justify-content: center;
@@ -33,4 +30,8 @@
     width: 25px;
 }
 
+.glossary-refresh-button {
+    width: 90%;
+    margin: 0 auto 1em;
+}
 /*# sourceMappingURL=glossary-detail.css.map */

@@ -13,13 +13,13 @@
 
 import './glossary-detail.less';
 
-import {Component}            from 'react';
-import {getGlossary}          from '@/api/api';
-import {Image, View}          from '@tarojs/components';
-import {Word}                 from '@/components/word/word';
-import {getCurrentInstance}   from '@tarojs/runtime';
-import {Pagination, Skeleton} from '@nutui/nutui-react-taro';
-import Taro                   from '@tarojs/taro';
+import {Component}                    from 'react';
+import {getGlossary}                  from '@/api/api';
+import {Image, View}                  from '@tarojs/components';
+import {Word}                         from '@/components/word/word';
+import {getCurrentInstance}           from '@tarojs/runtime';
+import {Button, Pagination, Skeleton} from '@nutui/nutui-react-taro';
+import Taro                           from '@tarojs/taro';
 
 const ITEMS_PER_PAGE = 50;
 
@@ -122,6 +122,17 @@ class GlossaryDetail extends Component {
             {wordElements}
           </View>
           {pagination}
+          <Button className={'glossary-refresh-button'}
+                  plain={true}
+                  type='info'
+                  onClick={() => {
+                    this.setState({
+                      loading: true,
+                    });
+                    this.componentDidMount();
+                  }}
+          >刷新
+          </Button>
         </View>
       );
     } else {
