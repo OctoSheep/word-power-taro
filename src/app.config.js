@@ -17,7 +17,7 @@ export default defineAppConfig({
     'pages/today/today',
     'pages/glossaries/glossaries',
     'pages/my/my',
-    'pages/glossary/glossary',
+    'pages/glossary-detail/glossary-detail',
   ],
   tabBar: {
     list: [

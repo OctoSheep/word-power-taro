@@ -11,7 +11,7 @@
  *
  */
 
-import './glossary.less';
+import './glossary-detail.less';
 
 import {Component}            from 'react';
 import {getGlossary}          from '@/api/api';
@@ -26,7 +26,7 @@ const ITEMS_PER_PAGE = 50;
 const prev_arrow_url = require('@/assets/images/navigate_before_FILL0_wght500_GRAD-25_opsz48.svg');
 const next_arrow_url = require('@/assets/images/navigate_next_FILL0_wght500_GRAD-25_opsz48.svg');
 
-class Glossary extends Component {
+class GlossaryDetail extends Component {
   routerParams = getCurrentInstance().router.params;
 
   constructor(props) {
@@ -140,4 +140,4 @@ class Glossary extends Component {
 
 }
 
-export default Glossary;
+export default GlossaryDetail;

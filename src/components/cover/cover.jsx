@@ -47,7 +47,7 @@ class Cover extends Component {
       <View className={'cover-index'}
             onClick={() => {
               Taro.navigateTo({
-                url: `/pages/glossary/glossary?glossaryName=${coverText}&glossaryDescription=${title}`,
+                url: `/pages/glossary-detail/glossary-detail?glossaryName=${coverText}&glossaryDescription=${title}`,
               }).catch((err) => {
                 console.log(err);
               });
