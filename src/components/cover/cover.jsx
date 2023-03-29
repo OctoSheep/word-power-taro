@@ -16,6 +16,7 @@ import './cover.less';
 import React, {Component}              from 'react';
 import {Text, View}                    from '@tarojs/components';
 import {hexToHsl, hslToHex, randomHex} from '@/utils/color-utils';
+import Taro                            from '@tarojs/taro';
 
 class Cover extends Component {
   constructor(props) {
@@ -43,17 +44,24 @@ class Cover extends Component {
     const bgColor   = hslToHex([colorHsl[0], colorHsl[1], 30]);
     const textColor = hslToHex([colorHsl[0], colorHsl[1], 70]);
     return (
-      <View className={'cover-index'}>
-        <View className={'cover-container'}
-              style={{
-                backgroundColor: bgColor,
-                borderColor:     textColor,
-              }}
-        ><Text className={'cover-text'}
-               style={{color: textColor}}
-        >{coverText}
-        </Text>
-        </View>
+      <View className={'cover-index'}
+            onClick={() => {
+              Taro.navigateTo({
+                url: `/pages/glossary/glossary?glossaryName=${coverText}&glossaryDescription=${title}`,
+              }).catch((err) => {
+                console.log(err);
+              });
+            }}
+      ><View className={'cover-container'}
+             style={{
+               backgroundColor: bgColor,
+               borderColor:     textColor,
+             }}
+      ><Text className={'cover-text'}
+             style={{color: textColor}}
+      >{coverText}
+      </Text>
+      </View>
         <View className={'cover-title'}>
           <Text>
             {title}

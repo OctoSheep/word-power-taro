@@ -18,7 +18,6 @@ import {View}                     from '@tarojs/components';
 import {Grid, GridItem, Skeleton} from '@nutui/nutui-react-taro';
 import {Cover}                    from '@/components/cover/cover';
 import {getGlossaries}            from '@/api/api';
-import Taro                       from '@tarojs/taro';
 
 class Glossaries extends Component {
   constructor(props) {
@@ -58,13 +57,6 @@ class Glossaries extends Component {
                 coverText={glossary.name}
               />
             }
-            onClick={() => {
-              Taro.navigateTo({
-                url: `/pages/glossary/glossary?glossaryName=${glossary.name}&glossaryDescription=${glossary.description}`,
-              }).catch((err) => {
-                console.log(err);
-              });
-            }}
           />
         );
       });
