@@ -33,28 +33,68 @@ import {
 import {
   getGlossaries,
 }                  from '@/api/api';
+import Taro        from '@tarojs/taro';
 
 class Glossaries extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      glossaries: [],
-      loading:    true,
+      glossaries:   [],
+      searchString: '',
+      searchResult: [],
+      loading:      true,
     };
   }
 
   componentDidMount() {
     getGlossaries().then((res) => {
+      const {searchString} = this.state;
+      let glossaries       = [];
+
+      if (!searchString) {
+        glossaries = res.data;
+      } else {
+        for (let i = 0; i < res.data.length; i++) {
+          if (res.data[i].name.includes(searchString)
+              || res.data[i].description.includes(searchString)) {
+            glossaries.push(res.data[i]);
+          }
+        }
+      }
+
       this.setState({
-        glossaries: res.data,
-        loading:    false,
+        glossaries:   res.data,
+        searchResult: glossaries,
+        loading:      false,
       });
     });
   }
 
+  searchGlossaries = (searchString) => {
+    let glossaries = [];
+
+    if (!searchString) {
+      glossaries = this.state.glossaries;
+    } else {
+      for (let i = 0; i < this.state.glossaries.length; i++) {
+        if (this.state.glossaries[i].name.includes(searchString)
+            || this.state.glossaries[i].description.includes(searchString)) {
+          glossaries.push(this.state.glossaries[i]);
+        }
+      }
+    }
+
+    this.setState({
+      searchString: searchString,
+      searchResult: glossaries,
+      loading:      false,
+    });
+  };
+
   render() {
     const {
-            glossaries,
+            searchString,
+            searchResult,
             loading,
           } = this.state;
 
@@ -65,6 +105,9 @@ class Glossaries extends Component {
                 type={'success'}
                 size={'small'}
                 icon={'plus'}
+                onClick={() => {
+                  console.log('Add.');
+                }}
         />
       );
 
@@ -86,20 +129,37 @@ class Glossaries extends Component {
       const searchBar = (
         <SearchBar className={'glossaries-search-bar'}
                    shape={'round'}
+                   placeholder={'请输入书名'}
+                   value={searchString}
                    actionText={'搜索'}
+                   clearIconSize={'1em'}
                    onSearch={(value) => {
-                     console.log(value);
+                     if (value !== undefined && value !== null && value
+                         !== '') {
+                       this.setState({
+                         loading: true,
+                       });
+                       this.searchGlossaries(value);
+                     } else {
+                       Taro.showToast({
+                         icon:  'error',
+                         title: '搜索内容为空',
+                       }).catch((err) => {
+                         console.log(err);
+                       });
+                     }
                    }}
                    onClear={() => {
                      this.setState({
-                       loading: true,
+                       searchString: '',
+                       loading:      true,
                      });
                      this.componentDidMount();
                    }}
         />
       );
 
-      let glossaryElements = glossaries.map((
+      const glossaryElements = searchResult.map((
         glossary,
         index,
       ) => {
@@ -116,9 +176,20 @@ class Glossaries extends Component {
         );
       });
 
+      let grid = (
+        <Grid
+          key={searchResult}
+          columnNum={2}
+          border={false}
+          center={false}
+        >{glossaryElements}
+        </Grid>
+      );
+
       if (glossaryElements.length === 0) {
-        glossaryElements = (
+        grid = (
           <Empty
+            key={searchResult}
             image={'empty'}
             description={'无数据'}
           />
@@ -141,12 +212,7 @@ class Glossaries extends Component {
             </Col>
           </Row>
 
-          <Grid
-            columnNum={2}
-            border={false}
-            center={false}
-          >{glossaryElements}
-          </Grid>
+          {grid}
         </View>
       );
     } else {
