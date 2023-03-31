@@ -178,7 +178,7 @@ class Glossaries extends Component {
 
       let grid = (
         <Grid
-          key={searchResult}
+          key={searchString}
           columnNum={2}
           border={false}
           center={false}
@@ -189,7 +189,7 @@ class Glossaries extends Component {
       if (glossaryElements.length === 0) {
         grid = (
           <Empty
-            key={searchResult}
+            key={searchString}
             image={'empty'}
             description={'无数据'}
           />
