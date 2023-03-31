@@ -13,11 +13,26 @@
 
 import './glossaries.less';
 
-import {Component}                        from 'react';
-import {View}                             from '@tarojs/components';
-import {Button, Grid, GridItem, Skeleton} from '@nutui/nutui-react-taro';
-import {Cover}                            from '@/components/cover/cover';
-import {getGlossaries}                    from '@/api/api';
+import {Component} from 'react';
+import {
+  View,
+}                  from '@tarojs/components';
+import {
+  Button,
+  Col,
+  Empty,
+  Grid,
+  GridItem,
+  Row,
+  SearchBar,
+  Skeleton,
+}                  from '@nutui/nutui-react-taro';
+import {
+  Cover,
+}                  from '@/components/cover/cover';
+import {
+  getGlossaries,
+}                  from '@/api/api';
 
 class Glossaries extends Component {
   constructor(props) {
@@ -44,7 +59,47 @@ class Glossaries extends Component {
           } = this.state;
 
     if (!loading) {
-      const glossaryElements = glossaries.map((
+      const addButton = (
+        <Button className={'glossaries-add-button'}
+                plain={true}
+                type={'success'}
+                size={'small'}
+                icon={'plus'}
+        />
+      );
+
+      const refreshButton = (
+        <Button className={'glossaries-refresh-button'}
+                plain={true}
+                type={'info'}
+                size={'small'}
+                icon={'refresh2'}
+                onClick={() => {
+                  this.setState({
+                    loading: true,
+                  });
+                  this.componentDidMount();
+                }}
+        />
+      );
+
+      const searchBar = (
+        <SearchBar className={'glossaries-search-bar'}
+                   shape={'round'}
+                   actionText={'搜索'}
+                   onSearch={(value) => {
+                     console.log(value);
+                   }}
+                   onClear={() => {
+                     this.setState({
+                       loading: true,
+                     });
+                     this.componentDidMount();
+                   }}
+        />
+      );
+
+      let glossaryElements = glossaries.map((
         glossary,
         index,
       ) => {
@@ -61,25 +116,37 @@ class Glossaries extends Component {
         );
       });
 
+      if (glossaryElements.length === 0) {
+        glossaryElements = (
+          <Empty
+            image={'empty'}
+            description={'无数据'}
+          />
+        );
+      }
+
       return (
         <View className={'glossaries-index'}>
+          <Row>
+            <Col span={1}/>
+            <Col span={2}>
+              {addButton}
+            </Col>
+            <Col span={1}/>
+            <Col span={2}>
+              {refreshButton}
+            </Col>
+            <Col span={18}>
+              {searchBar}
+            </Col>
+          </Row>
+
           <Grid
             columnNum={2}
             border={false}
             center={false}
           >{glossaryElements}
           </Grid>
-          <Button className={'glossaries-refresh-button'}
-                  plain={true}
-                  type='info'
-                  onClick={() => {
-                    this.setState({
-                      loading: true,
-                    });
-                    this.componentDidMount();
-                  }}
-          >刷新
-          </Button>
         </View>
       );
     } else {
