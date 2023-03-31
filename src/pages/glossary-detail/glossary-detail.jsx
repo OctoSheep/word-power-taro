@@ -16,6 +16,7 @@ import './glossary-detail.less';
 import {Component} from 'react';
 import {
   getGlossary,
+  getWords,
 }                  from '@/api/api';
 import {
   Image,
@@ -51,6 +52,7 @@ class GlossaryDetail extends Component {
     this.state = {
       glossaryName: this.routerParams.glossaryName,
       wordIds:      [],
+      searchString: '',
       currentPage:  1,
       loading:      true,
     };
@@ -64,11 +66,40 @@ class GlossaryDetail extends Component {
         wordIds: res.data.vocabularies,
         loading: false,
       });
+    }).then(() => {
+      this.searchWords(this.state.searchString).catch((err) => {
+        console.log(err);
+      });
     });
     Taro.setNavigationBarTitle({
       title: decodeURIComponent(this.routerParams.glossaryDescription.toString()),
     }).catch((err) => {
       console.log(err);
+    });
+  }
+
+  searchWords(searchString) {
+    const {glossaryName} = this.state;
+    return new Promise(() => {
+      getWords(
+        glossaryName,
+        searchString,
+      ).then((res) => {
+        const wordIds = res.data.map((word) => word._id);
+        this.setState({
+          wordIds:      wordIds,
+          searchString: searchString,
+          currentPage:  1,
+          loading:      false,
+        });
+      }).catch(() => {
+        this.setState({
+          wordIds:      [],
+          searchString: searchString,
+          currentPage:  1,
+          loading:      false,
+        });
+      });
     });
   }
 
@@ -82,6 +113,7 @@ class GlossaryDetail extends Component {
     const {
             glossaryName,
             wordIds,
+            searchString,
             currentPage,
             loading,
           } = this.state;
@@ -99,6 +131,9 @@ class GlossaryDetail extends Component {
                 type={'success'}
                 size={'small'}
                 icon={'plus'}
+                onClick={() => {
+                  console.log('Add.');
+                }}
         />
       );
 
@@ -120,13 +155,32 @@ class GlossaryDetail extends Component {
       const searchBar = (
         <SearchBar className={'glossary-search-bar'}
                    shape={'round'}
+                   placeholder={'请输入词汇'}
+                   value={searchString}
                    actionText={'搜索'}
+                   clearIconSize={'1em'}
                    onSearch={(value) => {
-                     console.log(value);
+                     if (value !== undefined && value !== null && value
+                         !== '') {
+                       this.setState({
+                         loading: true,
+                       });
+                       this.searchWords(value).catch((err) => {
+                         console.log(err);
+                       });
+                     } else {
+                       Taro.showToast({
+                         icon:  'error',
+                         title: '搜索内容为空',
+                       }).catch((err) => {
+                         console.log(err);
+                       });
+                     }
                    }}
                    onClear={() => {
                      this.setState({
-                       loading: true,
+                       searchString: '',
+                       loading:      true,
                      });
                      this.componentDidMount();
                    }}
@@ -153,7 +207,7 @@ class GlossaryDetail extends Component {
         />
       );
 
-      let wordElements = newWordIds.map((
+      const wordElements = newWordIds.map((
         wordId,
         index,
       ) => {
@@ -166,9 +220,18 @@ class GlossaryDetail extends Component {
         );
       });
 
+      let view = (
+        <View
+          key={searchString}
+        >
+          {wordElements}
+        </View>
+      );
+
       if (wordElements.length === 0) {
-        wordElements = (
+        view = (
           <Empty
+            key={searchString}
             image={'empty'}
             description={'无数据'}
           />
@@ -217,7 +280,7 @@ class GlossaryDetail extends Component {
 
           <View className={'glossary-word'}
                 key={currentPage}
-          >{wordElements}
+          >{view}
           </View>
           {pagination}
 
