@@ -13,15 +13,32 @@
 
 import './glossary-detail.less';
 
-import {Component}                    from 'react';
-import {getGlossary}                  from '@/api/api';
-import {Image, View}                  from '@tarojs/components';
-import {Word}                         from '@/components/word/word';
-import {getCurrentInstance}           from '@tarojs/runtime';
-import {Button, Pagination, Skeleton} from '@nutui/nutui-react-taro';
-import Taro                           from '@tarojs/taro';
+import {Component} from 'react';
+import {
+  getGlossary,
+}                  from '@/api/api';
+import {
+  Image,
+  View,
+}                  from '@tarojs/components';
+import {
+  Word,
+}                  from '@/components/word/word';
+import {
+  getCurrentInstance,
+}                  from '@tarojs/runtime';
+import {
+  Button,
+  Col,
+  Empty,
+  Pagination,
+  Row,
+  SearchBar,
+  Skeleton,
+}                  from '@nutui/nutui-react-taro';
+import Taro        from '@tarojs/taro';
 
-const ITEMS_PER_PAGE = 50;
+const ITEMS_PER_PAGE = 20;
 
 const prev_arrow_url = require('@/assets/images/navigate_before_FILL0_wght500_GRAD-25_opsz48.svg');
 const next_arrow_url = require('@/assets/images/navigate_next_FILL0_wght500_GRAD-25_opsz48.svg');
@@ -76,7 +93,67 @@ class GlossaryDetail extends Component {
         currentPage * ITEMS_PER_PAGE,
       );
 
-      const wordElements = newWordIds.map((
+      const addButton = (
+        <Button className={'glossary-add-button'}
+                plain={true}
+                type={'success'}
+                size={'small'}
+                icon={'plus'}
+        />
+      );
+
+      const refreshButton = (
+        <Button className={'glossary-refresh-button'}
+                plain={true}
+                type={'info'}
+                size={'small'}
+                icon={'refresh2'}
+                onClick={() => {
+                  this.setState({
+                    loading: true,
+                  });
+                  this.componentDidMount();
+                }}
+        />
+      );
+
+      const searchBar = (
+        <SearchBar className={'glossary-search-bar'}
+                   shape={'round'}
+                   actionText={'搜索'}
+                   onSearch={(value) => {
+                     console.log(value);
+                   }}
+                   onClear={() => {
+                     this.setState({
+                       loading: true,
+                     });
+                     this.componentDidMount();
+                   }}
+        />
+      );
+
+      const editButton = (
+        <Button className={'glossary-edit-button'}
+                type={'info'}
+                icon={'edit'}
+                onClick={() => {
+                  console.log('Edit.');
+                }}
+        />
+      );
+
+      const deleteButton = (
+        <Button className={'glossary-delete-button'}
+                type={'danger'}
+                icon={'del'}
+                onClick={() => {
+                  console.log('Delete.');
+                }}
+        />
+      );
+
+      let wordElements = newWordIds.map((
         wordId,
         index,
       ) => {
@@ -88,6 +165,15 @@ class GlossaryDetail extends Component {
           />
         );
       });
+
+      if (wordElements.length === 0) {
+        wordElements = (
+          <Empty
+            image={'empty'}
+            description={'无数据'}
+          />
+        );
+      }
 
       const pagination = (
         <Pagination className={'glossary-pagination'}
@@ -115,24 +201,37 @@ class GlossaryDetail extends Component {
 
       return (
         <View className={'glossary-index'}>
-          {pagination}
+          <Row>
+            <Col span={1}/>
+            <Col span={2}>
+              {addButton}
+            </Col>
+            <Col span={1}/>
+            <Col span={2}>
+              {refreshButton}
+            </Col>
+            <Col span={18}>
+              {searchBar}
+            </Col>
+          </Row>
+
           <View className={'glossary-word'}
                 key={currentPage}
-          >
-            {wordElements}
+          >{wordElements}
           </View>
           {pagination}
-          <Button className={'glossary-refresh-button'}
-                  plain={true}
-                  type='info'
-                  onClick={() => {
-                    this.setState({
-                      loading: true,
-                    });
-                    this.componentDidMount();
-                  }}
-          >刷新
-          </Button>
+
+          <Row
+            type={'flex'}
+            justify={'space-around'}
+          >
+            <Col span={10}>
+              {editButton}
+            </Col>
+            <Col span={10}>
+              {deleteButton}
+            </Col>
+          </Row>
         </View>
       );
     } else {
