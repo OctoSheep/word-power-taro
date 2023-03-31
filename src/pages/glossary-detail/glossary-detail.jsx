@@ -194,7 +194,8 @@ class GlossaryDetail extends Component {
                 onClick={() => {
                   console.log('Edit.');
                 }}
-        />
+        >编辑词汇书
+        </Button>
       );
 
       const deleteButton = (
@@ -204,7 +205,8 @@ class GlossaryDetail extends Component {
                 onClick={() => {
                   console.log('Delete.');
                 }}
-        />
+        >删除词汇书
+        </Button>
       );
 
       const wordElements = newWordIds.map((
