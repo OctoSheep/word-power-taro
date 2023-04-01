@@ -17,6 +17,7 @@ import React, {Component}              from 'react';
 import {Text, View}                    from '@tarojs/components';
 import {hexToHsl, hslToHex, randomHex} from '@/utils/color-utils';
 import Taro                            from '@tarojs/taro';
+import {getGlossary}                   from '@/api/api';
 
 class Cover extends Component {
   constructor(props) {
@@ -33,6 +34,27 @@ class Cover extends Component {
     };
   }
 
+  getGlossary = (
+    glossaryName,
+    glossaryDescription,
+  ) => {
+    getGlossary(glossaryName).then(() => {
+      Taro.navigateTo({
+        url: `/pages/glossary-detail/glossary-detail?glossaryName=${glossaryName}&glossaryDescription=${glossaryDescription}`,
+      }).catch((err) => {
+        console.log(err);
+      });
+    }).catch((err) => {
+      console.log(err);
+      Taro.showToast({
+        icon:  'error',
+        title: '词汇书不存在',
+      }).catch((err) => {
+        console.log(err);
+      });
+    });
+  };
+
   render() {
     const {
             title,
@@ -46,11 +68,10 @@ class Cover extends Component {
     return (
       <View className={'cover-index'}
             onClick={() => {
-              Taro.navigateTo({
-                url: `/pages/glossary-detail/glossary-detail?glossaryName=${coverText}&glossaryDescription=${title}`,
-              }).catch((err) => {
-                console.log(err);
-              });
+              this.getGlossary(
+                coverText,
+                title,
+              );
             }}
       ><View className={'cover-container'}
              style={{
