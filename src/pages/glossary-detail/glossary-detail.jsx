@@ -15,6 +15,7 @@ import './glossary-detail.less';
 
 import {Component} from 'react';
 import {
+  deleteGlossary,
   getGlossary,
   getWords,
 }                  from '@/api/api';
@@ -31,6 +32,7 @@ import {
 import {
   Button,
   Col,
+  Dialog,
   Empty,
   Pagination,
   Row,
@@ -50,11 +52,12 @@ class GlossaryDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      glossaryName: this.routerParams.glossaryName,
-      wordIds:      [],
-      searchString: '',
-      currentPage:  1,
-      loading:      true,
+      glossaryName:        this.routerParams.glossaryName,
+      wordIds:             [],
+      searchString:        '',
+      currentPage:         1,
+      deleteDialogVisible: false,
+      loading:             true,
     };
   }
 
@@ -103,6 +106,28 @@ class GlossaryDetail extends Component {
     });
   }
 
+  deleteGlossary() {
+    deleteGlossary(this.state.glossaryName).then(() => {
+      Taro.showToast({
+        icon:  'success',
+        title: '删除成功',
+      }).then(() => {
+        Taro.navigateBack().catch((err) => {
+          console.log(err);
+        });
+      }).catch((err) => {
+        console.log(err);
+      });
+    }).catch(() => {
+      Taro.showToast({
+        icon:  'error',
+        title: '删除失败',
+      }).catch((err) => {
+        console.log(err);
+      });
+    });
+  }
+
   handlePageChange(page) {
     this.setState({
       currentPage: page,
@@ -115,6 +140,7 @@ class GlossaryDetail extends Component {
             wordIds,
             searchString,
             currentPage,
+            deleteDialogVisible,
             loading,
           } = this.state;
 
@@ -198,12 +224,33 @@ class GlossaryDetail extends Component {
         </Button>
       );
 
+      const deleteDialog = (
+        <Dialog
+          title={`确认删除 ${glossaryName}？`}
+          visible={deleteDialogVisible}
+          onOk={() => {
+            this.setState({
+              deleteDialogVisible: false,
+            });
+            this.deleteGlossary();
+          }}
+          onCancel={() => {
+            this.setState({
+              deleteDialogVisible: false,
+            });
+          }}
+        >删除后将无法恢复
+        </Dialog>
+      );
+
       const deleteButton = (
         <Button className={'glossary-delete-button'}
                 type={'danger'}
                 icon={'del'}
                 onClick={() => {
-                  console.log('Delete.');
+                  this.setState({
+                    deleteDialogVisible: true,
+                  });
                 }}
         >删除词汇书
         </Button>
@@ -284,6 +331,7 @@ class GlossaryDetail extends Component {
                 key={currentPage}
           >{view}
           </View>
+          {deleteDialog}
           {pagination}
 
           <Row
