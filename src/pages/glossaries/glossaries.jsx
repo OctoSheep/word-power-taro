@@ -106,7 +106,11 @@ class Glossaries extends Component {
                 size={'small'}
                 icon={'plus'}
                 onClick={() => {
-                  console.log('Add.');
+                  Taro.navigateTo({
+                    url: '/pages/add-glossary/add-glossary',
+                  }).catch((err) => {
+                    console.log(err);
+                  });
                 }}
         />
       );
