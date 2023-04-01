@@ -56,6 +56,22 @@ const getGlossary = (glossaryName) => {
   );
 };
 
+const createGlossary = (
+  glossaryName,
+  glossaryDescription,
+  glossaryUrl,
+) => {
+  return request(
+    'glossaries',
+    'POST',
+    {
+      name: glossaryName,
+      description: glossaryDescription,
+      url: glossaryUrl,
+    },
+  );
+};
+
 const deleteGlossary = (glossaryName) => {
   return request(
     'glossaries/' + glossaryName,
@@ -85,6 +101,7 @@ const getWords = (
 export {
   getGlossaries,
   getGlossary,
+  createGlossary,
   deleteGlossary,
   getWords,
 };
