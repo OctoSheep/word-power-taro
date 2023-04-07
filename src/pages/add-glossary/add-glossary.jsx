@@ -21,12 +21,46 @@ class AddGlossary extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      glossaryName:            '',
-      nameErrorMessage:        '',
-      glossaryDescription:     '',
-      descriptionErrorMessage: '',
+      glossaryName:        '',
+      glossaryDescription: '',
+      buttonDisabled:      true,
     };
   }
+
+  setButtonStatus = (
+    type,
+    value,
+  ) => {
+    if (type === 'description') {
+      this.setState({
+        glossaryDescription: value,
+      });
+      if (this.state.glossaryName && value) {
+        this.setState({
+          buttonDisabled: false,
+        });
+      } else {
+        this.setState({
+          buttonDisabled: true,
+        });
+      }
+    }
+
+    if (type === 'name') {
+      this.setState({
+        glossaryName: value,
+      });
+      if (this.state.glossaryDescription && value) {
+        this.setState({
+          buttonDisabled: false,
+        });
+      } else {
+        this.setState({
+          buttonDisabled: true,
+        });
+      }
+    }
+  };
 
   createGlossary = () => {
     const {
@@ -34,57 +68,34 @@ class AddGlossary extends Component {
             glossaryDescription,
           } = this.state;
 
-    if (glossaryName === '') {
-      this.setState({
-        nameErrorMessage: '词汇书名称不能为空',
-      });
-    } else {
-      this.setState({
-        nameErrorMessage: '',
-      });
-    }
-
-    if (glossaryDescription === '') {
-      this.setState({
-        descriptionErrorMessage: '词汇书描述不能为空',
-      });
-    } else {
-      this.setState({
-        descriptionErrorMessage: '',
-      });
-    }
-
-    if (glossaryName !== '' && glossaryDescription !== '') {
-      createGlossary(
-        glossaryName,
-        glossaryDescription,
-      ).then(() => {
-        Taro.showToast({
-          icon:  'success',
-          title: '创建成功',
-        }).catch((err) => {
-          console.log(err);
-        });
-      }).then(() => {
-        Taro.navigateBack().catch((err) => {
-          console.log(err);
-        });
+    createGlossary(
+      glossaryName,
+      glossaryDescription,
+    ).then(() => {
+      Taro.showToast({
+        icon:  'success',
+        title: '创建成功',
       }).catch((err) => {
         console.log(err);
-        Taro.showToast({
-          icon:  'error',
-          title: '创建失败',
-        }).catch((err) => {
-          console.log(err);
-        });
       });
-    }
+    }).then(() => {
+      Taro.navigateBack().catch((err) => {
+        console.log(err);
+      });
+    }).catch((err) => {
+      console.log(err);
+      Taro.showToast({
+        icon:  'error',
+        title: '创建失败',
+      }).catch((err) => {
+        console.log(err);
+      });
+    });
   };
 
   render() {
     const {
-            nameErrorMessage,
-            descriptionErrorMessage,
+            buttonDisabled,
           } = this.state;
 
     return (
@@ -94,12 +105,18 @@ class AddGlossary extends Component {
           label={'书名'}
           placeholder={'请输入词汇书的名称'}
           clearable={true}
-          errorMessage={nameErrorMessage}
           required={true}
-          onBlur={(value) => {
-            this.setState({
-              glossaryName: value,
-            });
+          onChange={(value) => {
+            this.setButtonStatus(
+              'name',
+              value,
+            );
+          }}
+          onClear={() => {
+            this.setButtonStatus(
+              'name',
+              '',
+            );
           }}
         />
         <Input
@@ -107,17 +124,25 @@ class AddGlossary extends Component {
           label={'描述'}
           placeholder={'请输入词汇书的描述'}
           clearable={true}
-          errorMessage={descriptionErrorMessage}
           required={true}
-          onBlur={(value) => {
-            this.setState({
-              glossaryDescription: value,
-            });
+          onChange={(value) => {
+            this.setButtonStatus(
+              'description',
+              value,
+            );
+          }}
+          onClear={() => {
+            this.setButtonStatus(
+              'description',
+              '',
+            );
           }}
         />
         <Button
+          key={buttonDisabled}
           type={'primary'}
           block={true}
+          disabled={buttonDisabled}
           onClick={() => {
             this.createGlossary();
           }}
