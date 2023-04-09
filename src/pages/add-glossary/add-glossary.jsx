@@ -11,11 +11,13 @@
  *
  */
 
-import {Component}      from 'react';
-import {createGlossary} from '@/api/api';
-import {View}           from '@tarojs/components';
-import {Button, Input}  from '@nutui/nutui-react-taro';
-import Taro             from '@tarojs/taro';
+import './add-glossary.less';
+
+import {Component}                        from 'react';
+import {createGlossary}                   from '@/api/api';
+import {View}                             from '@tarojs/components';
+import {Button, Cell, Input, Row, Switch} from '@nutui/nutui-react-taro';
+import Taro                               from '@tarojs/taro';
 
 class AddGlossary extends Component {
   constructor(props) {
@@ -23,6 +25,9 @@ class AddGlossary extends Component {
     this.state = {
       glossaryName:        '',
       glossaryDescription: '',
+      glossaryUrl:         '',
+      glossaryToken:       '',
+      showUrlInput:        false,
       buttonDisabled:      true,
     };
   }
@@ -35,7 +40,78 @@ class AddGlossary extends Component {
       this.setState({
         glossaryDescription: value,
       });
-      if (this.state.glossaryName && value) {
+      const {
+              glossaryName,
+              glossaryUrl,
+              glossaryToken,
+              showUrlInput,
+            } = this.state;
+      if (showUrlInput) {
+        if (value && glossaryName && glossaryUrl && glossaryToken) {
+          this.setState({
+            buttonDisabled: false,
+          });
+        } else {
+          this.setState({
+            buttonDisabled: true,
+          });
+        }
+      } else {
+        if (value && glossaryName) {
+          this.setState({
+            buttonDisabled: false,
+          });
+        } else {
+          this.setState({
+            buttonDisabled: true,
+          });
+        }
+      }
+    }
+
+    if (type === 'name') {
+      this.setState({
+        glossaryName: value,
+      });
+      const {
+              glossaryDescription,
+              glossaryUrl,
+              glossaryToken,
+              showUrlInput,
+            } = this.state;
+      if (showUrlInput) {
+        if (value && glossaryUrl && glossaryToken && glossaryDescription) {
+          this.setState({
+            buttonDisabled: false,
+          });
+        } else {
+          this.setState({
+            buttonDisabled: true,
+          });
+        }
+      } else {
+        if (value && glossaryDescription) {
+          this.setState({
+            buttonDisabled: false,
+          });
+        } else {
+          this.setState({
+            buttonDisabled: true,
+          });
+        }
+      }
+    }
+
+    if (type === 'url') {
+      this.setState({
+        glossaryUrl: value,
+      });
+      const {
+              glossaryName,
+              glossaryDescription,
+              glossaryToken,
+            } = this.state;
+      if (value && glossaryName && glossaryToken && glossaryDescription) {
         this.setState({
           buttonDisabled: false,
         });
@@ -46,11 +122,16 @@ class AddGlossary extends Component {
       }
     }
 
-    if (type === 'name') {
+    if (type === 'token') {
       this.setState({
-        glossaryName: value,
+        glossaryToken: value,
       });
-      if (this.state.glossaryDescription && value) {
+      const {
+              glossaryName,
+              glossaryDescription,
+              glossaryUrl,
+            } = this.state;
+      if (value && glossaryName && glossaryUrl && glossaryDescription) {
         this.setState({
           buttonDisabled: false,
         });
@@ -58,6 +139,44 @@ class AddGlossary extends Component {
         this.setState({
           buttonDisabled: true,
         });
+      }
+    }
+
+    if (type === 'switch') {
+      this.setState({
+        showUrlInput: value,
+      });
+      const {
+              glossaryName,
+              glossaryDescription,
+              glossaryUrl,
+              glossaryToken,
+            } = this.state;
+      if (value) {
+        if (glossaryName && glossaryDescription && glossaryUrl
+            && glossaryToken) {
+          this.setState({
+            buttonDisabled: false,
+          });
+        } else {
+          this.setState({
+            buttonDisabled: true,
+          });
+        }
+      } else {
+        this.setState({
+          glossaryUrl:   '',
+          glossaryToken: '',
+        });
+        if (glossaryName && glossaryDescription) {
+          this.setState({
+            buttonDisabled: false,
+          });
+        } else {
+          this.setState({
+            buttonDisabled: true,
+          });
+        }
       }
     }
   };
@@ -66,11 +185,15 @@ class AddGlossary extends Component {
     const {
             glossaryName,
             glossaryDescription,
+            glossaryUrl,
+            glossaryToken,
           } = this.state;
 
     createGlossary(
       glossaryName,
       glossaryDescription,
+      glossaryUrl,
+      glossaryToken,
     ).then(() => {
       Taro.showToast({
         icon:  'success',
@@ -95,59 +218,137 @@ class AddGlossary extends Component {
 
   render() {
     const {
+            showUrlInput,
             buttonDisabled,
           } = this.state;
 
+    let urlInput = (
+      <Row/>
+    );
+
+    let tokenInput = (
+      <Row/>
+    );
+
+    if (showUrlInput) {
+      urlInput   = (
+        <Row>
+          <Input
+            type={'url'}
+            label={'URL'}
+            placeholder={'请输入词汇书的URL'}
+            clearable={true}
+            required={true}
+            onChange={(value) => {
+              this.setButtonStatus(
+                'url',
+                value,
+              );
+            }}
+            onClear={() => {
+              this.setButtonStatus(
+                'url',
+                '',
+              );
+            }}
+          />
+        </Row>
+      );
+      tokenInput = (
+        <Row>
+          <Input
+            label={'Token'}
+            placeholder={'请输入词汇书的Token'}
+            clearable={true}
+            required={true}
+            onChange={(value) => {
+              this.setButtonStatus(
+                'token',
+                value,
+              );
+            }}
+            onClear={() => {
+              this.setButtonStatus(
+                'token',
+                '',
+              );
+            }}
+          />
+        </Row>
+      );
+    }
+
     return (
       <View className={'add-glossary-index'}>
-        <Input
-          name={'text'}
-          label={'书名'}
-          placeholder={'请输入词汇书的名称'}
-          clearable={true}
-          required={true}
-          onChange={(value) => {
-            this.setButtonStatus(
-              'name',
-              value,
-            );
-          }}
-          onClear={() => {
-            this.setButtonStatus(
-              'name',
-              '',
-            );
-          }}
-        />
-        <Input
-          name={'text'}
-          label={'描述'}
-          placeholder={'请输入词汇书的描述'}
-          clearable={true}
-          required={true}
-          onChange={(value) => {
-            this.setButtonStatus(
-              'description',
-              value,
-            );
-          }}
-          onClear={() => {
-            this.setButtonStatus(
-              'description',
-              '',
-            );
-          }}
-        />
-        <Button
-          key={buttonDisabled}
-          type={'primary'}
-          block={true}
-          disabled={buttonDisabled}
-          onClick={() => {
-            this.createGlossary();
-          }}
-        >添加
-        </Button>
+        <Row>
+          <Cell
+            title={'是否从URL导入'}
+            linkSlot={
+              <Switch
+                onChange={(value) => {
+                  this.setButtonStatus(
+                    'switch',
+                    value,
+                  );
+                }}
+              />
+            }
+          />
+        </Row>
+        <Row>
+          <Input
+            label={'书名'}
+            placeholder={'请输入词汇书的名称'}
+            clearable={true}
+            required={true}
+            onChange={(value) => {
+              this.setButtonStatus(
+                'name',
+                value,
+              );
+            }}
+            onClear={() => {
+              this.setButtonStatus(
+                'name',
+                '',
+              );
+            }}
+          />
+        </Row>
+        <Row>
+          <Input
+            label={'描述'}
+            placeholder={'请输入词汇书的描述'}
+            clearable={true}
+            required={true}
+            onChange={(value) => {
+              this.setButtonStatus(
+                'description',
+                value,
+              );
+            }}
+            onClear={() => {
+              this.setButtonStatus(
+                'description',
+                '',
+              );
+            }}
+          />
+        </Row>
+        {urlInput}
+        {tokenInput}
+        <Row>
+          <Button
+            key={buttonDisabled}
+            type={'primary'}
+            block={true}
+            disabled={buttonDisabled}
+            onClick={() => {
+              this.createGlossary();
+            }}
+          >添加
+          </Button>
+        </Row>
       </View>
     );
   }
