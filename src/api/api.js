@@ -19,6 +19,7 @@ const request = (
   url,
   method,
   data,
+  header,
 ) => {
   return new Promise((
     resolve,
@@ -28,6 +29,7 @@ const request = (
       url:    BASE_URL + url,
       method: method,
       data:   data,
+      header: header,
     }).then(res => {
       if (res.statusCode - 200 < 100) {
         resolve(res.data);
@@ -60,14 +62,18 @@ const createGlossary = (
   glossaryName,
   glossaryDescription,
   glossaryUrl,
+  glossaryToken,
 ) => {
   return request(
     'glossaries',
     'POST',
     {
-      name: glossaryName,
+      name:        glossaryName,
       description: glossaryDescription,
-      url: glossaryUrl,
+      url:         glossaryUrl,
+    },
+    {
+      'Authorization': 'Bearer ' + glossaryToken,
     },
   );
 };
