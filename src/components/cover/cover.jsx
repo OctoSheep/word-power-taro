@@ -36,11 +36,10 @@ class Cover extends Component {
 
   getGlossary = (
     glossaryName,
-    glossaryDescription,
   ) => {
     getGlossary(glossaryName).then(() => {
       Taro.navigateTo({
-        url: `/pages/glossary-detail/glossary-detail?glossaryName=${glossaryName}&glossaryDescription=${glossaryDescription}`,
+        url: `/pages/glossary-detail/glossary-detail?glossaryName=${glossaryName}`,
       }).catch((err) => {
         console.log(err);
       });
@@ -70,7 +69,6 @@ class Cover extends Component {
             onClick={() => {
               this.getGlossary(
                 coverText,
-                title,
               );
             }}
       ><View className={'cover-container'}

@@ -69,16 +69,17 @@ class GlossaryDetail extends Component {
         wordIds: res.data.vocabularies,
         loading: false,
       });
+      Taro.setNavigationBarTitle({
+        title: res.data.description,
+      }).catch((err) => {
+        console.log(err);
+      });
     }).then(() => {
       this.searchWords(this.state.searchString).catch((err) => {
         console.log(err);
       });
     });
-    Taro.setNavigationBarTitle({
-      title: decodeURIComponent(this.routerParams.glossaryDescription.toString()),
-    }).catch((err) => {
-      console.log(err);
-    });
+
   }
 
   searchWords(searchString) {
