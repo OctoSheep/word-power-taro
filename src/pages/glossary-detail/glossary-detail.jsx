@@ -219,7 +219,11 @@ class GlossaryDetail extends Component {
                 type={'info'}
                 icon={'edit'}
                 onClick={() => {
-                  console.log('Edit.');
+                  Taro.navigateTo({
+                    url: `/pages/edit-glossary/edit-glossary?glossaryName=${glossaryName}`,
+                  }).catch((err) => {
+                    console.log(err);
+                  });
                 }}
         >编辑词汇书
         </Button>
