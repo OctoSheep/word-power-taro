@@ -13,7 +13,7 @@
 
 import Taro from '@tarojs/taro';
 
-const BASE_URL = 'https://api.cones.top/v1/';
+const BASE_URL_V1 = 'https://api.cones.top/v1/';
 
 const request = (
   url,
@@ -26,7 +26,7 @@ const request = (
     reject,
   ) => {
     Taro.request({
-      url:    BASE_URL + url,
+      url:    BASE_URL_V1 + url,
       method: method,
       data:   data,
       header: header,
@@ -78,6 +78,21 @@ const createGlossary = (
   );
 };
 
+const updateGlossary = (
+  oldGlossaryName,
+  newGlossaryName,
+  glossaryDescription,
+) => {
+  return request(
+    'glossaries/' + oldGlossaryName,
+    'PATCH',
+    {
+      name:        newGlossaryName,
+      description: glossaryDescription,
+    },
+  );
+};
+
 const deleteGlossary = (glossaryName) => {
   return request(
     'glossaries/' + glossaryName,
@@ -108,6 +123,7 @@ export {
   getGlossaries,
   getGlossary,
   createGlossary,
+  updateGlossary,
   deleteGlossary,
   getWords,
 };
