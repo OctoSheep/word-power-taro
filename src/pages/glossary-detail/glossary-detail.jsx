@@ -289,6 +289,7 @@ class GlossaryDetail extends Component {
 
       const pagination = (
         <Pagination className={'glossary-pagination'}
+                    key={totalWords}
                     modelValue={currentPage}
                     totalItems={totalWords}
                     showPageSize={5}
