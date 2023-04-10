@@ -140,6 +140,17 @@ const createWord = (
   );
 };
 
+const deleteWord = (
+  glossaryName,
+  id,
+) => {
+  return request(
+    'words/' + glossaryName + '/' + id,
+    'DELETE',
+    {},
+  );
+};
+
 export {
   getGlossaries,
   getGlossary,
@@ -148,4 +159,5 @@ export {
   deleteGlossary,
   getWords,
   createWord,
+  deleteWord,
 };
