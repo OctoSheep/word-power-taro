@@ -119,6 +119,27 @@ const getWords = (
   );
 };
 
+const createWord = (
+  glossaryName,
+  index,
+  word,
+  phonetic_uk,
+  phonetic_us,
+  translation,
+) => {
+  return request(
+    'words/' + glossaryName,
+    'POST',
+    {
+      index:       index,
+      word:        word,
+      phonetic_uk: phonetic_uk,
+      phonetic_us: phonetic_us,
+      translation: translation,
+    },
+  );
+};
+
 export {
   getGlossaries,
   getGlossary,
@@ -126,4 +147,5 @@ export {
   updateGlossary,
   deleteGlossary,
   getWords,
+  createWord,
 };
