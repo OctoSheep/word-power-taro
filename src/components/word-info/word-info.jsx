@@ -13,11 +13,21 @@
 
 import './word-info.less';
 
-import {Component}                       from 'react';
-import Taro                              from '@tarojs/taro';
-import {View}                            from '@tarojs/components';
-import {Button, Input, InputNumber, Row} from '@nutui/nutui-react-taro';
-import {createWord}                      from '@/api/api';
+import {Component}  from 'react';
+import Taro         from '@tarojs/taro';
+import {
+  View,
+}                   from '@tarojs/components';
+import {
+  Button,
+  Col,
+  Dialog,
+  Icon,
+  Input,
+  InputNumber,
+  Row,
+}                   from '@nutui/nutui-react-taro';
+import {createWord} from '@/api/api';
 
 class WordInfo extends Component {
   constructor(props) {
@@ -25,21 +35,27 @@ class WordInfo extends Component {
     const {
             glossaryName,
             pageType,
+            index,
+            word,
+            phonetic_uk,
+            phonetic_us,
+            translation,
           }    = this.props;
     this.state = {
-      glossaryName:   glossaryName,
-      pageType:       pageType,
-      index:          '',
-      word:           '',
-      phonetic_uk:    '',
-      phonetic_us:    '',
-      translation:    [
+      glossaryName:        glossaryName,
+      pageType:            pageType,
+      index:               index || '',
+      word:                word || '',
+      phonetic_uk:         phonetic_uk || '',
+      phonetic_us:         phonetic_us || '',
+      translation:         translation || [
         {
           'part_of_speech': '',
           'definition':     '',
         },
       ],
-      buttonDisabled: true,
+      buttonDisabled:      true,
+      deleteDialogVisible: false,
     };
   }
 
@@ -244,13 +260,22 @@ class WordInfo extends Component {
 
   render() {
     const {
+            pageType,
             index,
             word,
             phonetic_uk,
             phonetic_us,
             translation,
             buttonDisabled,
+            deleteDialogVisible,
           } = this.state;
+
+    const clearable = pageType === 'add';
+    const required  = pageType === 'add';
+    const readonly  = pageType === 'show';
+
+    const innerAudioContext    = Taro.createInnerAudioContext();
+    innerAudioContext.autoplay = false;
 
     const translationElements = translation.map((
       trans,
@@ -264,8 +289,9 @@ class WordInfo extends Component {
             label={`词性${index + 1}`}
             placeholder={`请输入词性${index + 1}`}
             defaultValue={trans.part_of_speech}
-            clearable={true}
-            required={true}
+            clearable={clearable}
+            required={required}
+            readonly={readonly}
             border={false}
             onChange={(value) => {
               translation[index].part_of_speech = value;
@@ -288,8 +314,9 @@ class WordInfo extends Component {
               label={`释义${index + 1}`}
               placeholder={`请输入释义${index + 1}`}
               defaultValue={trans.definition}
-              clearable={true}
-              required={true}
+              clearable={clearable}
+              required={required}
+              readonly={readonly}
               onChange={(value) => {
                 translation[index].definition = value;
                 this.setButtonStatus(
@@ -310,6 +337,141 @@ class WordInfo extends Component {
       );
     });
 
+    const deleteDialog = (
+      <Dialog
+        title={`确认删除 ${word}？`}
+        visible={deleteDialogVisible}
+        onOk={() => {
+          console.log('Delete.');
+        }}
+        onCancel={() => {
+          this.setState({
+            deleteDialogVisible: false,
+          });
+        }}
+      >删除后将无法恢复
+      </Dialog>
+    );
+
+    let uk_button  = null;
+    let us_button  = null;
+    let transCount = null;
+    let submitRow  = null;
+
+    if (pageType === 'add') {
+      transCount = (
+        <Row>
+          <Input
+            label={'释义数量'}
+            labelWidth={300}
+            slotInput={
+              <InputNumber
+                modelValue={translation.length}
+                max={9}
+                onChangeFuc={(value) => {
+                  this.changeTransCount(
+                    Number(value),
+                  );
+                }}
+              />
+            }
+          />
+        </Row>
+      );
+
+      submitRow = (
+        <Row>
+          <Button
+            key={buttonDisabled}
+            type={'primary'}
+            block={true}
+            disabled={buttonDisabled}
+            onClick={() => {
+              this.createWord();
+            }}
+          >添加
+          </Button>
+        </Row>
+      );
+    } else if (pageType === 'show') {
+      uk_button = (
+        <Button
+          type={'info'}
+          size={'small'}
+          onClick={() => {
+            innerAudioContext.src
+              = `https://dict.youdao.com/dictvoice?audio=${word}&type=1`;
+            innerAudioContext.play();
+          }}
+        ><Icon
+          name={'voice'}
+          size={'1em'}
+        />
+        </Button>
+      );
+
+      us_button = (
+        <Button
+          type={'info'}
+          size={'small'}
+          onClick={() => {
+            innerAudioContext.src
+              = `https://dict.youdao.com/dictvoice?audio=${word}&type=2`;
+            innerAudioContext.play();
+          }}
+        ><Icon
+          name={'voice'}
+          size={'1em'}
+        />
+        </Button>
+      );
+
+      submitRow = (
+        <Row
+          type={'flex'}
+          justify={'space-around'}
+        >
+          <Col span={10}>
+            <Button className={'glossary-edit-button'}
+                    type={'info'}
+                    icon={'edit'}
+                    onClick={() => {
+                      console.log('Edit.');
+                    }}
+            >编辑词汇
+            </Button>
+          </Col>
+          <Col span={10}>
+            <Button className={'glossary-delete-button'}
+                    type={'danger'}
+                    icon={'del'}
+                    onClick={() => {
+                      this.setState({
+                        deleteDialogVisible: true,
+                      });
+                    }}
+            >删除词汇
+            </Button>
+          </Col>
+        </Row>
+      );
+    } else if (pageType === 'edit') {
+      submitRow = (
+        <Row>
+          <Button
+            key={buttonDisabled}
+            type={'primary'}
+            block={true}
+            disabled={buttonDisabled}
+            onClick={() => {
+              console.log('Edit.');
+            }}
+          >修改
+          </Button>
+        </Row>
+      );
+    }
+
     return (
       <View className='word-info-index'>
         <Row>
@@ -318,8 +480,9 @@ class WordInfo extends Component {
             label={'序号'}
             placeholder={'请输入序号'}
             defaultValue={index}
-            clearable={true}
-            required={true}
+            clearable={clearable}
+            required={required}
+            readonly={readonly}
             formatter={(value) => {
               return value !== '' ? Number(value).toString() : '';
             }}
@@ -344,8 +507,9 @@ class WordInfo extends Component {
             label={'词汇'}
             placeholder={'请输入词汇'}
             defaultValue={word}
-            clearable={true}
-            required={true}
+            clearable={clearable}
+            required={required}
+            readonly={readonly}
             onChange={(value) => {
               this.setButtonStatus(
                 'word',
@@ -366,8 +530,10 @@ class WordInfo extends Component {
             label={'英式音标'}
             placeholder={'请输入英式音标'}
             defaultValue={phonetic_uk}
-            clearable={true}
-            required={true}
+            clearable={clearable}
+            required={required}
+            readonly={readonly}
+            slotButton={uk_button}
             onChange={(value) => {
               this.setButtonStatus(
                 'phonetic_uk',
@@ -388,8 +554,10 @@ class WordInfo extends Component {
             label={'美式音标'}
             placeholder={'请输入美式音标'}
             defaultValue={phonetic_us}
-            clearable={true}
-            required={true}
+            clearable={clearable}
+            required={required}
+            readonly={readonly}
+            slotButton={us_button}
             onChange={(value) => {
               this.setButtonStatus(
                 'phonetic_us',
@@ -405,38 +573,10 @@ class WordInfo extends Component {
           />
         </Row>
 
-        <Row>
-          <Input
-            label={'释义数量'}
-            labelWidth={300}
-            slotInput={
-              <InputNumber
-                modelValue={translation.length}
-                max={9}
-                onChangeFuc={(value) => {
-                  this.changeTransCount(
-                    Number(value),
-                  );
-                }}
-              />
-            }
-          />
-        </Row>
-
+        {transCount}
         {translationElements}
-
-        <Row>
-          <Button
-            key={buttonDisabled}
-            type={'primary'}
-            block={true}
-            disabled={buttonDisabled}
-            onClick={() => {
-              this.createWord();
-            }}
-          >添加
-          </Button>
-        </Row>
+        {deleteDialog}
+        {submitRow}
       </View>
     );
   }

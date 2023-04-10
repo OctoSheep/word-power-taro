@@ -14,21 +14,26 @@
 import './word-detail.less';
 
 import {Component}          from 'react';
-import {Text, View}         from '@tarojs/components';
+import {View}               from '@tarojs/components';
 import {getCurrentInstance} from '@tarojs/runtime';
 import {getWords}           from '@/api/api';
-import {Button, Skeleton}   from '@nutui/nutui-react-taro';
+import {Skeleton}           from '@nutui/nutui-react-taro';
 import Taro                 from '@tarojs/taro';
+import {WordInfo}           from '@/components/word-info/word-info';
 
 class WordDetail extends Component {
-
   routerParams = getCurrentInstance().router.params;
 
   constructor(props) {
     super(props);
     this.state = {
-      word:    '',
-      loading: true,
+      glossaryName: this.routerParams.glossaryName,
+      index:        '',
+      word:         '',
+      phonetic_uk:  '',
+      phonetic_us:  '',
+      translation:  [],
+      loading:      true,
     };
   }
 
@@ -42,9 +47,20 @@ class WordDetail extends Component {
       wordName,
       null,
     ).then((res) => {
+      const {
+              index,
+              word,
+              phonetic_uk,
+              phonetic_us,
+              translation,
+            } = res.data[0];
       this.setState({
-        word:    res.data[0],
-        loading: false,
+        index:       index,
+        word:        word,
+        phonetic_uk: phonetic_uk,
+        phonetic_us: phonetic_us,
+        translation: translation,
+        loading:     false,
       });
     });
     Taro.setNavigationBarTitle({
@@ -56,48 +72,27 @@ class WordDetail extends Component {
 
   render() {
     const {
+            glossaryName,
+            index,
             word,
+            phonetic_uk,
+            phonetic_us,
+            translation,
             loading,
           } = this.state;
 
     if (!loading) {
-      const innerAudioContext    = Taro.createInnerAudioContext();
-      innerAudioContext.autoplay = false;
-
-      // noinspection JSUnresolvedVariable
       return (
-        <View className={'word-detail-index'}>
-          <View>
-            <Text>{`词汇：${word.word}`}</Text>
-          </View>
-          <View>
-            <Text>{`美式音标：${word.phonetic_us}`}</Text>
-            <Button
-              type={'default'}
-              size={'small'}
-              onClick={() => {
-                innerAudioContext.src
-                  = `https://dict.youdao.com/dictvoice?audio=${word.word}&type=2`;
-                innerAudioContext.play();
-              }}
-            >美式发音</Button>
-          </View>
-          <View>
-            <Text>{`英式音标：${word.phonetic_uk}`}</Text>
-            <Button
-              type={'default'}
-              size={'small'}
-              onClick={() => {
-                innerAudioContext.src
-                  = `https://dict.youdao.com/dictvoice?audio=${word.word}&type=1`;
-                innerAudioContext.play();
-              }}
-            >英式发音</Button>
-          </View>
-          <View>
-            <Text>{`释义：(${word.translation[0].part_of_speech}) ${word.translation[0].definition}`}</Text>
-            {/*TODO 遍历*/}
-          </View>
+        <View>
+          <WordInfo
+            glossaryName={glossaryName}
+            pageType={'show'}
+            index={index}
+            word={word}
+            phonetic_uk={phonetic_uk}
+            phonetic_us={phonetic_us}
+            translation={translation}
+          />
         </View>
       );
     } else {
