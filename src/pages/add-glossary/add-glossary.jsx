@@ -13,11 +13,11 @@
 
 import './add-glossary.less';
 
-import {Component}                        from 'react';
-import {createGlossary}                   from '@/api/api';
-import {View}                             from '@tarojs/components';
-import {Button, Cell, Input, Row, Switch} from '@nutui/nutui-react-taro';
-import Taro                               from '@tarojs/taro';
+import {Component}                  from 'react';
+import {createGlossary}             from '@/api/api';
+import {View}                       from '@tarojs/components';
+import {Button, Input, Row, Switch} from '@nutui/nutui-react-taro';
+import Taro                         from '@tarojs/taro';
 
 class AddGlossary extends Component {
   constructor(props) {
@@ -231,12 +231,12 @@ class AddGlossary extends Component {
     );
 
     if (showUrlInput) {
-      urlInput   = (
+      urlInput = (
         <Row>
           <Input
             type={'url'}
             label={'URL'}
-            placeholder={'请输入词汇书的URL'}
+            placeholder={'请输入JSON文件的URL'}
             clearable={true}
             required={true}
             onChange={(value) => {
@@ -254,11 +254,12 @@ class AddGlossary extends Component {
           />
         </Row>
       );
+
       tokenInput = (
         <Row>
           <Input
-            label={'Token'}
-            placeholder={'请输入词汇书的Token'}
+            label={'令牌'}
+            placeholder={'请输入访问仓库的令牌'}
             clearable={true}
             required={true}
             onChange={(value) => {
@@ -281,21 +282,6 @@ class AddGlossary extends Component {
     return (
       <View className={'add-glossary-index'}>
         <Row>
-          <Cell
-            title={'是否从URL导入'}
-            linkSlot={
-              <Switch
-                onChange={(value) => {
-                  this.setButtonStatus(
-                    'switch',
-                    value,
-                  );
-                }}
-              />
-            }
-          />
-        </Row>
-        <Row>
           <Input
             label={'书名'}
             placeholder={'请输入词汇书的名称'}
@@ -315,6 +301,7 @@ class AddGlossary extends Component {
             }}
           />
         </Row>
+
         <Row>
           <Input
             label={'描述'}
@@ -335,8 +322,27 @@ class AddGlossary extends Component {
             }}
           />
         </Row>
+
+        <Row>
+          <Input
+            label={'从GitHub仓库导入'}
+            labelWidth={300}
+            slotInput={
+              <Switch
+                onChange={(value) => {
+                  this.setButtonStatus(
+                    'switch',
+                    value,
+                  );
+                }}
+              />
+            }
+          />
+        </Row>
+
         {urlInput}
         {tokenInput}
+
         <Row>
           <Button
             key={buttonDisabled}
