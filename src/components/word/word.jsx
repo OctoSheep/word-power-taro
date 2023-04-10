@@ -62,7 +62,6 @@ class Word extends Component {
 
   getWord = (
     glossaryName,
-    word,
     id,
   ) => {
     getWords(
@@ -71,7 +70,7 @@ class Word extends Component {
       id,
     ).then(() => {
       Taro.navigateTo({
-        url: `/pages/word-detail/word-detail?glossaryName=${glossaryName}&wordName=${word}`,
+        url: `/pages/word-detail/word-detail?glossaryName=${glossaryName}&id=${id}`,
       }).catch((err) => {
         console.log(err);
       });
@@ -111,7 +110,6 @@ class Word extends Component {
               onClick={() => {
                 this.getWord(
                   glossaryName,
-                  word,
                   id,
                 );
               }}

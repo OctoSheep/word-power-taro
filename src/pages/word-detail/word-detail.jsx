@@ -28,9 +28,9 @@ class WordDetail extends Component {
     super(props);
     this.state = {
       glossaryName: this.routerParams.glossaryName,
-      id:           '',
+      id:           this.routerParams.id,
       index:        '',
-      word:         this.routerParams.wordName,
+      word:         '',
       phonetic_uk:  '',
       phonetic_us:  '',
       translation:  [],
@@ -41,33 +41,33 @@ class WordDetail extends Component {
   componentDidMount() {
     const {
             glossaryName,
-            word,
+            id,
           } = this.state;
     getWords(
       glossaryName,
-      word,
       null,
+      id,
     ).then((res) => {
       const {
-              _id,
               index,
+              word,
               phonetic_uk,
               phonetic_us,
               translation,
             } = res.data[0];
       this.setState({
-        id:          _id,
         index:       index,
+        word:        word,
         phonetic_uk: phonetic_uk,
         phonetic_us: phonetic_us,
         translation: translation,
         loading:     false,
       });
-    });
-    Taro.setNavigationBarTitle({
-      title: word.toString(),
-    }).catch((err) => {
-      console.log(err);
+      Taro.setNavigationBarTitle({
+        title: word.toString(),
+      }).catch((err) => {
+        console.log(err);
+      });
     });
   }
 
