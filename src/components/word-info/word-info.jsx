@@ -13,11 +13,11 @@
 
 import './word-info.less';
 
-import {Component}  from 'react';
-import Taro         from '@tarojs/taro';
+import {Component}              from 'react';
+import Taro                     from '@tarojs/taro';
 import {
   View,
-}                   from '@tarojs/components';
+}                               from '@tarojs/components';
 import {
   Button,
   Col,
@@ -26,8 +26,8 @@ import {
   Input,
   InputNumber,
   Row,
-}                   from '@nutui/nutui-react-taro';
-import {createWord} from '@/api/api';
+}                               from '@nutui/nutui-react-taro';
+import {createWord, deleteWord} from '@/api/api';
 
 class WordInfo extends Component {
   constructor(props) {
@@ -35,6 +35,7 @@ class WordInfo extends Component {
     const {
             glossaryName,
             pageType,
+            id,
             index,
             word,
             phonetic_uk,
@@ -44,6 +45,7 @@ class WordInfo extends Component {
     this.state = {
       glossaryName:        glossaryName,
       pageType:            pageType,
+      id:                  id || '',
       index:               index || '',
       word:                word || '',
       phonetic_uk:         phonetic_uk || '',
@@ -258,6 +260,36 @@ class WordInfo extends Component {
     });
   };
 
+  deleteWord = () => {
+    const {
+            glossaryName,
+            id,
+          } = this.state;
+
+    deleteWord(
+      glossaryName,
+      id,
+    ).then(() => {
+      Taro.showToast({
+        icon:  'success',
+        title: '删除成功',
+      }).then(() => {
+        Taro.navigateBack().catch((err) => {
+          console.log(err);
+        });
+      }).catch((err) => {
+        console.log(err);
+      });
+    }).catch(() => {
+      Taro.showToast({
+        icon:  'error',
+        title: '删除失败',
+      }).catch((err) => {
+        console.log(err);
+      });
+    });
+  };
+
   render() {
     const {
             pageType,
@@ -342,7 +374,10 @@ class WordInfo extends Component {
         title={`确认删除 ${word}？`}
         visible={deleteDialogVisible}
         onOk={() => {
-          console.log('Delete.');
+          this.setState({
+            deleteDialogVisible: false,
+          });
+          this.deleteWord();
         }}
         onCancel={() => {
           this.setState({

@@ -28,8 +28,9 @@ class WordDetail extends Component {
     super(props);
     this.state = {
       glossaryName: this.routerParams.glossaryName,
+      id:           '',
       index:        '',
-      word:         '',
+      word:         this.routerParams.wordName,
       phonetic_uk:  '',
       phonetic_us:  '',
       translation:  [],
@@ -40,23 +41,23 @@ class WordDetail extends Component {
   componentDidMount() {
     const {
             glossaryName,
-            wordName,
-          } = this.routerParams;
+            word,
+          } = this.state;
     getWords(
       glossaryName,
-      wordName,
+      word,
       null,
     ).then((res) => {
       const {
+              _id,
               index,
-              word,
               phonetic_uk,
               phonetic_us,
               translation,
             } = res.data[0];
       this.setState({
+        id:          _id,
         index:       index,
-        word:        word,
         phonetic_uk: phonetic_uk,
         phonetic_us: phonetic_us,
         translation: translation,
@@ -64,7 +65,7 @@ class WordDetail extends Component {
       });
     });
     Taro.setNavigationBarTitle({
-      title: wordName.toString(),
+      title: word.toString(),
     }).catch((err) => {
       console.log(err);
     });
@@ -73,6 +74,7 @@ class WordDetail extends Component {
   render() {
     const {
             glossaryName,
+            id,
             index,
             word,
             phonetic_uk,
@@ -87,6 +89,7 @@ class WordDetail extends Component {
           <WordInfo
             glossaryName={glossaryName}
             pageType={'show'}
+            id={id}
             index={index}
             word={word}
             phonetic_uk={phonetic_uk}

@@ -60,9 +60,36 @@ class Word extends Component {
     });
   }
 
+  getWord = (
+    glossaryName,
+    word,
+    id,
+  ) => {
+    getWords(
+      glossaryName,
+      null,
+      id,
+    ).then(() => {
+      Taro.navigateTo({
+        url: `/pages/word-detail/word-detail?glossaryName=${glossaryName}&wordName=${word}`,
+      }).catch((err) => {
+        console.log(err);
+      });
+    }).catch((err) => {
+      console.log(err);
+      Taro.showToast({
+        icon:  'error',
+        title: '词汇不存在',
+      }).catch((err) => {
+        console.log(err);
+      });
+    });
+  };
+
   render() {
     const {
             glossaryName,
+            id,
             index,
             word,
             color,
@@ -82,11 +109,11 @@ class Word extends Component {
       return (
         <View className={'word-index'}
               onClick={() => {
-                Taro.navigateTo({
-                  url: `/pages/word-detail/word-detail?glossaryName=${glossaryName}&wordName=${word}`,
-                }).catch((err) => {
-                  console.log(err);
-                });
+                this.getWord(
+                  glossaryName,
+                  word,
+                  id,
+                );
               }}
         ><View className={'word-container'}
                style={{borderColor: textColor}}
