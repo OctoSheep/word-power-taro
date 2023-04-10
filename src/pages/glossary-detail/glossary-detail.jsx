@@ -63,6 +63,7 @@ class GlossaryDetail extends Component {
 
   componentDidMount() {
     const {glossaryName} = this.state;
+
     getGlossary(glossaryName).then((res) => {
       // noinspection JSUnresolvedVariable
       this.setState({
@@ -79,7 +80,6 @@ class GlossaryDetail extends Component {
         console.log(err);
       });
     });
-
   }
 
   searchWords(searchString) {
@@ -152,7 +152,11 @@ class GlossaryDetail extends Component {
               size={'small'}
               icon={'plus'}
               onClick={() => {
-                console.log('Add.');
+                Taro.navigateTo({
+                  url: `/pages/add-word/add-word?glossaryName=${glossaryName}`,
+                }).catch((err) => {
+                  console.log(err);
+                });
               }}
       />
     );
