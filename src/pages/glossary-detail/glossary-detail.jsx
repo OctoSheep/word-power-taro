@@ -53,6 +53,7 @@ class GlossaryDetail extends Component {
     super(props);
     this.state = {
       glossaryName:        this.routerParams.glossaryName,
+      glossaryDescription: '',
       wordIds:             [],
       searchString:        '',
       currentPage:         1,
@@ -67,8 +68,9 @@ class GlossaryDetail extends Component {
     getGlossary(glossaryName).then((res) => {
       // noinspection JSUnresolvedVariable
       this.setState({
-        wordIds: res.data.vocabularies,
-        loading: false,
+        wordIds:             res.data.vocabularies,
+        glossaryDescription: res.data.description,
+        loading:             false,
       });
       Taro.setNavigationBarTitle({
         title: res.data.description,
@@ -138,6 +140,7 @@ class GlossaryDetail extends Component {
   render() {
     const {
             glossaryName,
+            glossaryDescription,
             wordIds,
             searchString,
             currentPage,
@@ -235,7 +238,7 @@ class GlossaryDetail extends Component {
 
       const deleteDialog = (
         <Dialog
-          title={`确认删除 ${glossaryName}？`}
+          title={`确认删除${glossaryDescription}？`}
           visible={deleteDialogVisible}
           onOk={() => {
             this.setState({
