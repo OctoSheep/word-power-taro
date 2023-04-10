@@ -98,71 +98,71 @@ class Glossaries extends Component {
             loading,
           } = this.state;
 
-    if (!loading) {
-      const addButton = (
-        <Button className={'glossaries-add-button'}
-                plain={true}
-                type={'success'}
-                size={'small'}
-                icon={'plus'}
-                onClick={() => {
-                  Taro.navigateTo({
-                    url: '/pages/add-glossary/add-glossary',
-                  }).catch((err) => {
-                    console.log(err);
-                  });
-                }}
-        />
-      );
+    const addButton = (
+      <Button className={'glossaries-add-button'}
+              plain={true}
+              type={'success'}
+              size={'small'}
+              icon={'plus'}
+              onClick={() => {
+                Taro.navigateTo({
+                  url: '/pages/add-glossary/add-glossary',
+                }).catch((err) => {
+                  console.log(err);
+                });
+              }}
+      />
+    );
 
-      const refreshButton = (
-        <Button className={'glossaries-refresh-button'}
-                plain={true}
-                type={'info'}
-                size={'small'}
-                icon={'refresh2'}
-                onClick={() => {
-                  this.setState({
-                    loading: true,
-                  });
-                  this.componentDidMount();
-                }}
-        />
-      );
+    const refreshButton = (
+      <Button className={'glossaries-refresh-button'}
+              plain={true}
+              type={'info'}
+              size={'small'}
+              icon={'refresh2'}
+              onClick={() => {
+                this.setState({
+                  loading: true,
+                });
+                this.componentDidMount();
+              }}
+      />
+    );
 
-      const searchBar = (
-        <SearchBar className={'glossaries-search-bar'}
-                   shape={'round'}
-                   placeholder={'请输入书名'}
-                   value={searchString}
-                   actionText={'搜索'}
-                   clearIconSize={'1em'}
-                   onSearch={(value) => {
-                     if (value !== undefined && value !== null && value
-                         !== '') {
-                       this.setState({
-                         loading: true,
-                       });
-                       this.searchGlossaries(value);
-                     } else {
-                       Taro.showToast({
-                         icon:  'error',
-                         title: '搜索内容为空',
-                       }).catch((err) => {
-                         console.log(err);
-                       });
-                     }
-                   }}
-                   onClear={() => {
+    const searchBar = (
+      <SearchBar className={'glossaries-search-bar'}
+                 shape={'round'}
+                 placeholder={'请输入书名'}
+                 value={searchString}
+                 actionText={'搜索'}
+                 clearIconSize={'1em'}
+                 onSearch={(value) => {
+                   if (value !== undefined && value !== null && value
+                       !== '') {
                      this.setState({
-                       searchString: '',
-                       loading:      true,
+                       loading: true,
                      });
-                     this.componentDidMount();
-                   }}
-        />
-      );
+                     this.searchGlossaries(value);
+                   } else {
+                     Taro.showToast({
+                       icon:  'error',
+                       title: '搜索内容为空',
+                     }).catch((err) => {
+                       console.log(err);
+                     });
+                   }
+                 }}
+                 onClear={() => {
+                   this.setState({
+                     searchString: '',
+                     loading:      true,
+                   });
+                   this.componentDidMount();
+                 }}
+      />
+    );
 
+    if (!loading) {
       const glossaryElements = searchResult.map((
         glossary,
         index,
@@ -216,18 +216,36 @@ class Glossaries extends Component {
             </Col>
           </Row>
 
-          {grid}
+          <Row>
+            {grid}
+          </Row>
         </View>
       );
     } else {
       return (
         <View className={'glossaries-index'}>
-          <Skeleton className={'glossaries-skeleton'}
-                    width={'300px'}
-                    height={'15px'}
-                    animated={true}
-                    row={3}
-          />
+          <Row>
+            <Col span={1}/>
+            <Col span={2}>
+              {addButton}
+            </Col>
+            <Col span={1}/>
+            <Col span={2}>
+              {refreshButton}
+            </Col>
+            <Col span={18}>
+              {searchBar}
+            </Col>
+          </Row>
+
+          <Row>
+            <Skeleton className={'glossaries-skeleton'}
+                      width={'300px'}
+                      height={'15px'}
+                      animated={true}
+                      row={3}
+            />
+          </Row>
         </View>
       );
     }

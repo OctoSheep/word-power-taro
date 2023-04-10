@@ -145,73 +145,73 @@ class GlossaryDetail extends Component {
             loading,
           } = this.state;
 
+    const addButton = (
+      <Button className={'glossary-add-button'}
+              plain={true}
+              type={'success'}
+              size={'small'}
+              icon={'plus'}
+              onClick={() => {
+                console.log('Add.');
+              }}
+      />
+    );
+
+    const refreshButton = (
+      <Button className={'glossary-refresh-button'}
+              plain={true}
+              type={'info'}
+              size={'small'}
+              icon={'refresh2'}
+              onClick={() => {
+                this.setState({
+                  loading: true,
+                });
+                this.componentDidMount();
+              }}
+      />
+    );
+
+    const searchBar = (
+      <SearchBar className={'glossary-search-bar'}
+                 shape={'round'}
+                 placeholder={'请输入词汇'}
+                 value={searchString}
+                 actionText={'搜索'}
+                 clearIconSize={'1em'}
+                 onSearch={(value) => {
+                   if (value !== undefined && value !== null && value
+                       !== '') {
+                     this.setState({
+                       loading: true,
+                     });
+                     this.searchWords(value).catch((err) => {
+                       console.log(err);
+                     });
+                   } else {
+                     Taro.showToast({
+                       icon:  'error',
+                       title: '搜索内容为空',
+                     }).catch((err) => {
+                       console.log(err);
+                     });
+                   }
+                 }}
+                 onClear={() => {
+                   this.setState({
+                     searchString: '',
+                     loading:      true,
+                   });
+                   this.componentDidMount();
+                 }}
+      />
+    );
+
     if (!loading) {
       const totalWords = wordIds.length;
       const newWordIds = wordIds.slice(
         (currentPage - 1) * ITEMS_PER_PAGE,
         currentPage * ITEMS_PER_PAGE,
-      );
-
-      const addButton = (
-        <Button className={'glossary-add-button'}
-                plain={true}
-                type={'success'}
-                size={'small'}
-                icon={'plus'}
-                onClick={() => {
-                  console.log('Add.');
-                }}
-        />
-      );
-
-      const refreshButton = (
-        <Button className={'glossary-refresh-button'}
-                plain={true}
-                type={'info'}
-                size={'small'}
-                icon={'refresh2'}
-                onClick={() => {
-                  this.setState({
-                    loading: true,
-                  });
-                  this.componentDidMount();
-                }}
-        />
-      );
-
-      const searchBar = (
-        <SearchBar className={'glossary-search-bar'}
-                   shape={'round'}
-                   placeholder={'请输入词汇'}
-                   value={searchString}
-                   actionText={'搜索'}
-                   clearIconSize={'1em'}
-                   onSearch={(value) => {
-                     if (value !== undefined && value !== null && value
-                         !== '') {
-                       this.setState({
-                         loading: true,
-                       });
-                       this.searchWords(value).catch((err) => {
-                         console.log(err);
-                       });
-                     } else {
-                       Taro.showToast({
-                         icon:  'error',
-                         title: '搜索内容为空',
-                       }).catch((err) => {
-                         console.log(err);
-                       });
-                     }
-                   }}
-                   onClear={() => {
-                     this.setState({
-                       searchString: '',
-                       loading:      true,
-                     });
-                     this.componentDidMount();
-                   }}
-        />
       );
 
       const editButton = (
@@ -337,6 +337,7 @@ class GlossaryDetail extends Component {
                 key={currentPage}
           >{view}
           </View>
+
           {deleteDialog}
           {pagination}
 
@@ -356,12 +357,28 @@ class GlossaryDetail extends Component {
     } else {
       return (
         <View className={'glossary-index'}>
-          <Skeleton className={'glossary-skeleton'}
-                    width={'300px'}
-                    height={'15px'}
-                    animated={true}
-                    row={3}
-          />
+          <Row>
+            <Col span={1}/>
+            <Col span={2}>
+              {addButton}
+            </Col>
+            <Col span={1}/>
+            <Col span={2}>
+              {refreshButton}
+            </Col>
+            <Col span={18}>
+              {searchBar}
+            </Col>
+          </Row>
+
+          <Row>
+            <Skeleton className={'glossary-skeleton'}
+                      width={'300px'}
+                      height={'15px'}
+                      animated={true}
+                      row={3}
+            />
+          </Row>
         </View>
       );
     }
