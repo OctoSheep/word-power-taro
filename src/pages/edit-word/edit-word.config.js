@@ -10,16 +10,7 @@
  * You should have received a copy of the GNU General Public License along with Word Power. If not, see <https://www.gnu.org/licenses/>.
  *
  */
-.word-info-index {
-    margin: 1em;
-}
 
-.word-info-edit-button {
-    width: 100%;
-}
-
-.word-info-delete-button {
-    width: 100%;
-}
-
-/*# sourceMappingURL=word-info.css.map */
+export default definePageConfig({
+  navigationBarTitleText: '编辑词汇',
+});

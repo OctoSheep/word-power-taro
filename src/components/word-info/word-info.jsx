@@ -13,11 +13,11 @@
 
 import './word-info.less';
 
-import {Component}              from 'react';
-import Taro                     from '@tarojs/taro';
+import {Component}                          from 'react';
+import Taro                                 from '@tarojs/taro';
 import {
   View,
-}                               from '@tarojs/components';
+}                                           from '@tarojs/components';
 import {
   Button,
   Col,
@@ -26,8 +26,11 @@ import {
   Input,
   InputNumber,
   Row,
-}                               from '@nutui/nutui-react-taro';
-import {createWord, deleteWord} from '@/api/api';
+}                                           from '@nutui/nutui-react-taro';
+import {createWord, deleteWord, updateWord} from '@/api/api';
+
+const TRANS_MIN = 1;
+const TRANS_MAX = 9;
 
 class WordInfo extends Component {
   constructor(props) {
@@ -44,6 +47,7 @@ class WordInfo extends Component {
           }    = this.props;
     this.state = {
       glossaryName:        glossaryName,
+      newGlossaryName:     glossaryName,
       pageType:            pageType,
       id:                  id || '',
       index:               index || '',
@@ -62,6 +66,13 @@ class WordInfo extends Component {
   }
 
   changeTransCount = (value) => {
+    if (value < TRANS_MIN) {
+      value = TRANS_MIN;
+    }
+    if (value > TRANS_MAX) {
+      value = TRANS_MAX;
+    }
+
     const {
             index,
             word,
@@ -105,18 +116,42 @@ class WordInfo extends Component {
     type,
     value,
   ) => {
-    if (type === 'index') {
+    if (type === 'glossaryName') {
       this.setState({
-        index: value,
+        newGlossaryName: value,
       });
       const {
+              index,
               word,
               phonetic_uk,
               phonetic_us,
               translation,
             }      = this.state;
       const length = translation.length;
-      let disabled = !value || !word || !phonetic_uk || !phonetic_us;
+      let disabled = !value || !index || !word || !phonetic_uk || !phonetic_us;
+      for (let i = 0; i < length; i++) {
+        if (!translation[i].part_of_speech || !translation[i].definition) {
+          disabled = true;
+          break;
+        }
+      }
+      this.setState({
+        buttonDisabled: disabled,
+      });
+    } else if (type === 'index') {
+      this.setState({
+        index: value,
+      });
+      const {
+              newGlossaryName,
+              word,
+              phonetic_uk,
+              phonetic_us,
+              translation,
+            }      = this.state;
+      const length = translation.length;
+      let disabled = !newGlossaryName || !value || !word || !phonetic_uk
+                     || !phonetic_us;
       for (let i = 0; i < length; i++) {
         if (!translation[i].part_of_speech || !translation[i].definition) {
           disabled = true;
@@ -131,13 +166,15 @@ class WordInfo extends Component {
         word: value,
       });
       const {
+              newGlossaryName,
               index,
               phonetic_uk,
               phonetic_us,
               translation,
             }      = this.state;
       const length = translation.length;
-      let disabled = !index || !value || !phonetic_uk || !phonetic_us;
+      let disabled = !newGlossaryName || !index || !value || !phonetic_uk
+                     || !phonetic_us;
       for (let i = 0; i < length; i++) {
         if (!translation[i].part_of_speech || !translation[i].definition) {
           disabled = true;
@@ -152,13 +189,15 @@ class WordInfo extends Component {
         phonetic_uk: value,
       });
       const {
+              newGlossaryName,
               index,
               word,
               phonetic_us,
               translation,
             }      = this.state;
       const length = translation.length;
-      let disabled = !index || !word || !value || !phonetic_us;
+      let disabled = !newGlossaryName || !index || !word || !value
+                     || !phonetic_us;
       for (let i = 0; i < length; i++) {
         if (!translation[i].part_of_speech || !translation[i].definition) {
           disabled = true;
@@ -173,13 +212,15 @@ class WordInfo extends Component {
         phonetic_us: value,
       });
       const {
+              newGlossaryName,
               index,
               word,
               phonetic_uk,
               translation,
             }      = this.state;
       const length = translation.length;
-      let disabled = !index || !word || !phonetic_uk || !value;
+      let disabled = !newGlossaryName || !index || !word || !phonetic_uk
+                     || !value;
       for (let i = 0; i < length; i++) {
         if (!translation[i].part_of_speech || !translation[i].definition) {
           disabled = true;
@@ -194,13 +235,15 @@ class WordInfo extends Component {
         translation: value,
       });
       const {
+              newGlossaryName,
               index,
               word,
               phonetic_uk,
               phonetic_us,
             }      = this.state;
       const length = value.length;
-      let disabled = !index || !word || !phonetic_uk || !phonetic_us;
+      let disabled = !newGlossaryName || !index || !word || !phonetic_uk
+                     || !phonetic_us;
       for (let i = 0; i < length; i++) {
         if (!value[i].part_of_speech || !value[i].definition) {
           disabled = true;
@@ -260,6 +303,49 @@ class WordInfo extends Component {
     });
   };
 
+  updateWord = () => {
+    const {
+            glossaryName,
+            newGlossaryName,
+            id,
+            index,
+            word,
+            phonetic_uk,
+            phonetic_us,
+            translation,
+          } = this.state;
+
+    updateWord(
+      glossaryName,
+      newGlossaryName,
+      id,
+      Number(index),
+      word,
+      phonetic_uk,
+      phonetic_us,
+      translation,
+    ).then(() => {
+      Taro.showToast({
+        icon:  'success',
+        title: '更新成功',
+      }).then(() => {
+        Taro.navigateBack().catch((err) => {
+          console.log(err);
+        });
+      }).catch((err) => {
+        console.log(err);
+      });
+    }).catch((err) => {
+      console.log(err);
+      Taro.showToast({
+        icon:  'error',
+        title: '更新失败',
+      }).catch((err) => {
+        console.log(err);
+      });
+    });
+  };
+
   deleteWord = () => {
     const {
             glossaryName,
@@ -292,7 +378,9 @@ class WordInfo extends Component {
 
   render() {
     const {
+            glossaryName,
             pageType,
+            id,
             index,
             word,
             phonetic_uk,
@@ -302,8 +390,8 @@ class WordInfo extends Component {
             deleteDialogVisible,
           } = this.state;
 
-    const clearable = pageType === 'add';
-    const required  = pageType === 'add';
+    const clearable = pageType !== 'show';
+    const required  = pageType !== 'show';
     const readonly  = pageType === 'show';
 
     const innerAudioContext    = Taro.createInnerAudioContext();
@@ -388,12 +476,37 @@ class WordInfo extends Component {
       </Dialog>
     );
 
-    let uk_button  = null;
-    let us_button  = null;
+    const glossaryRow = (
+      <Row>
+        <Input
+          label={'词汇书'}
+          placeholder={'请输入词汇书'}
+          defaultValue={glossaryName}
+          clearable={pageType === 'edit'}
+          required={pageType === 'edit'}
+          readonly={pageType !== 'edit'}
+          onChange={(value) => {
+            this.setButtonStatus(
+              'glossaryName',
+              value,
+            );
+          }}
+          onClear={() => {
+            this.setButtonStatus(
+              'glossaryName',
+              '',
+            );
+          }}
+        />
+      </Row>
+    );
+
+    let ukButton   = null;
+    let usButton   = null;
     let transCount = null;
     let submitRow  = null;
 
-    if (pageType === 'add') {
+    if (pageType !== 'show') {
       transCount = (
         <Row>
           <Input
@@ -402,7 +515,9 @@ class WordInfo extends Component {
             slotInput={
               <InputNumber
                 modelValue={translation.length}
-                max={9}
+                min={TRANS_MIN}
+                max={TRANS_MAX}
+                inputWidth={10}
                 onChangeFuc={(value) => {
                   this.changeTransCount(
                     Number(value),
@@ -413,7 +528,9 @@ class WordInfo extends Component {
           />
         </Row>
       );
+    }
 
+    if (pageType === 'add') {
       submitRow = (
         <Row>
           <Button
@@ -429,7 +546,7 @@ class WordInfo extends Component {
         </Row>
       );
     } else if (pageType === 'show') {
-      uk_button = (
+      ukButton = (
         <Button
           type={'info'}
           size={'small'}
@@ -445,7 +562,7 @@ class WordInfo extends Component {
         </Button>
       );
 
-      us_button = (
+      usButton = (
         <Button
           type={'info'}
           size={'small'}
@@ -467,17 +584,21 @@ class WordInfo extends Component {
           justify={'space-around'}
         >
           <Col span={10}>
-            <Button className={'glossary-edit-button'}
+            <Button className={'word-info-edit-button'}
                     type={'info'}
                     icon={'edit'}
                     onClick={() => {
-                      console.log('Edit.');
+                      Taro.redirectTo({
+                        url: `/pages/edit-word/edit-word?glossaryName=${glossaryName}&id=${id}`,
+                      }).catch((err) => {
+                        console.log(err);
+                      });
                     }}
-            >编辑词汇
+            >编辑
             </Button>
           </Col>
           <Col span={10}>
-            <Button className={'glossary-delete-button'}
+            <Button className={'word-info-delete-button'}
                     type={'danger'}
                     icon={'del'}
                     onClick={() => {
@@ -485,7 +606,7 @@ class WordInfo extends Component {
                         deleteDialogVisible: true,
                       });
                     }}
-            >删除词汇
+            >删除
             </Button>
           </Col>
         </Row>
@@ -499,7 +620,7 @@ class WordInfo extends Component {
             block={true}
             disabled={buttonDisabled}
             onClick={() => {
-              console.log('Edit.');
+              this.updateWord();
             }}
           >修改
           </Button>
@@ -509,6 +630,8 @@ class WordInfo extends Component {
 
     return (
       <View className='word-info-index'>
+        {glossaryRow}
+
         <Row>
           <Input
             type={'digit'}
@@ -568,7 +691,7 @@ class WordInfo extends Component {
             clearable={clearable}
             required={required}
             readonly={readonly}
-            slotButton={uk_button}
+            slotButton={ukButton}
             onChange={(value) => {
               this.setButtonStatus(
                 'phonetic_uk',
@@ -592,7 +715,7 @@ class WordInfo extends Component {
             clearable={clearable}
             required={required}
             readonly={readonly}
-            slotButton={us_button}
+            slotButton={usButton}
             onChange={(value) => {
               this.setButtonStatus(
                 'phonetic_us',
