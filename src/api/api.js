@@ -140,6 +140,30 @@ const createWord = (
   );
 };
 
+const updateWord = (
+  glossaryName,
+  newGlossaryName,
+  id,
+  index,
+  word,
+  phonetic_uk,
+  phonetic_us,
+  translation,
+) => {
+  return request(
+    'words/' + glossaryName + '/' + id,
+    'PATCH',
+    {
+      glossary:    newGlossaryName,
+      index:       index,
+      word:        word,
+      phonetic_uk: phonetic_uk,
+      phonetic_us: phonetic_us,
+      translation: translation,
+    },
+  );
+};
+
 const deleteWord = (
   glossaryName,
   id,
@@ -159,5 +183,6 @@ export {
   deleteGlossary,
   getWords,
   createWord,
+  updateWord,
   deleteWord,
 };
