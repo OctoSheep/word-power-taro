@@ -28,25 +28,23 @@
   height: 25px;
   width: 25px;
 }
-
 .glossary-add-button {
   margin-top: 1em;
 }
-
 .glossary-refresh-button {
   margin-top: 1em;
 }
-
 .glossary-search-bar {
   margin: 0;
 }
-
 .glossary-edit-button {
   width: 100%;
 }
-
 .glossary-delete-button {
-  width: 100%;
+    width: 100%;
 }
 
+.glossary-bottom-row {
+    margin-top: 2em;
+}
 /*# sourceMappingURL=glossary-detail.css.map */

@@ -232,7 +232,7 @@ class GlossaryDetail extends Component {
                     console.log(err);
                   });
                 }}
-        >编辑词汇书
+        >编辑
         </Button>
       );
 
@@ -264,7 +264,7 @@ class GlossaryDetail extends Component {
                     deleteDialogVisible: true,
                   });
                 }}
-        >删除词汇书
+        >删除
         </Button>
       );
 
@@ -282,9 +282,7 @@ class GlossaryDetail extends Component {
       });
 
       let view = (
-        <View
-          key={searchString}
-        >
+        <View>
           {wordElements}
         </View>
       );
@@ -292,37 +290,40 @@ class GlossaryDetail extends Component {
       if (wordElements.length === 0) {
         view = (
           <Empty
-            key={searchString}
             image={'empty'}
             description={'无数据'}
           />
         );
       }
 
-      const pagination = (
-        <Pagination className={'glossary-pagination'}
-                    key={totalWords}
-                    modelValue={currentPage}
-                    totalItems={totalWords}
-                    showPageSize={5}
-                    itemsPerPage={ITEMS_PER_PAGE}
-                    prevText={
-                      <Image className={'glossary-pagination-arrow'}
-                             src={prev_arrow_url}
-                             svg={true}
-                      />
-                    }
-                    nextText={
-                      <Image className={'glossary-pagination-arrow'}
-                             src={next_arrow_url}
-                             svg={true}
-                      />
-                    }
-                    onChange={(page) => {
-                      this.handlePageChange(page);
-                    }}
-        />
-      );
+      let pagination = null;
+
+      if (totalWords > ITEMS_PER_PAGE) {
+        pagination = (
+          <Pagination className={'glossary-pagination'}
+                      key={`totalWords_${totalWords}`}
+                      modelValue={currentPage}
+                      totalItems={totalWords}
+                      showPageSize={5}
+                      itemsPerPage={ITEMS_PER_PAGE}
+                      prevText={
+                        <Image className={'glossary-pagination-arrow'}
+                               src={prev_arrow_url}
+                               svg={true}
+                        />
+                      }
+                      nextText={
+                        <Image className={'glossary-pagination-arrow'}
+                               src={next_arrow_url}
+                               svg={true}
+                        />
+                      }
+                      onChange={(page) => {
+                        this.handlePageChange(page);
+                      }}
+          />
+        );
+      }
 
       return (
         <View className={'glossary-index'}>
@@ -341,16 +342,16 @@ class GlossaryDetail extends Component {
           </Row>
 
           <View className={'glossary-word'}
-                key={currentPage}
+                key={`${currentPage}_${searchString}`}
           >{view}
           </View>
 
           {deleteDialog}
           {pagination}
 
-          <Row
-            type={'flex'}
-            justify={'space-around'}
+          <Row className={'glossary-bottom-row'}
+               type={'flex'}
+               justify={'space-around'}
           >
             <Col span={10}>
               {editButton}
