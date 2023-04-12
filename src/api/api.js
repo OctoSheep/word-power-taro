@@ -13,20 +13,26 @@
 
 import Taro from '@tarojs/taro';
 
-const BASE_URL_V1 = 'https://api.cones.top/v1/';
+let BASE_URL = 'https://api.cones.top/';
 
 const request = (
   url,
   method,
-  data,
-  header,
+  data    = {},
+  header  = {},
+  version = 1,
 ) => {
   return new Promise((
     resolve,
     reject,
   ) => {
+    if (version === 1) {
+      BASE_URL += 'v1/';
+    } else if (version === 2) {
+      BASE_URL += 'v2/';
+    }
     Taro.request({
-      url:    BASE_URL_V1 + url,
+      url:    BASE_URL + url,
       method: method,
       data:   data,
       header: header,
@@ -46,7 +52,6 @@ const getGlossaries = () => {
   return request(
     'glossaries',
     'GET',
-    {},
   );
 };
 
@@ -54,7 +59,6 @@ const getGlossary = (glossaryName) => {
   return request(
     'glossaries/' + glossaryName,
     'GET',
-    {},
   );
 };
 
@@ -97,7 +101,6 @@ const deleteGlossary = (glossaryName) => {
   return request(
     'glossaries/' + glossaryName,
     'DELETE',
-    {},
   );
 };
 
@@ -115,7 +118,6 @@ const getWords = (
   return request(
     url,
     'GET',
-    {},
   );
 };
 
@@ -171,7 +173,16 @@ const deleteWord = (
   return request(
     'words/' + glossaryName + '/' + id,
     'DELETE',
+  );
+};
+
+const getUser = (code) => {
+  return request(
+    'users/' + code,
+    'GET',
     {},
+    {},
+    2,
   );
 };
 
@@ -185,4 +196,5 @@ export {
   createWord,
   updateWord,
   deleteWord,
+  getUser,
 };
