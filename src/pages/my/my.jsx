@@ -15,18 +15,63 @@ import './my.less';
 
 import {Component}  from 'react';
 import {Text, View} from '@tarojs/components';
+import Taro         from '@tarojs/taro';
+import {Input}      from '@nutui/nutui-react-taro';
+import {getUser}    from '@/api/api';
 
 class My extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      data:        {},
+      userInfo:    {},
+      hasUserInfo: false,
+      loading:     true,
+    };
+  }
+
+  componentDidMount() {
+    Taro.login().then((res) => {
+      if (res.code) {
+        getUser(res.code).then((data) => {
+          this.setState({
+            data:    data,
+            loading: false,
+          });
+        });
+      } else {
+        console.log('登录失败！' + res.errMsg);
+      }
+    }).catch((err) => {
+      console.log(err);
+    });
   }
 
   render() {
-    return (
-      <View className={'my-index'}>
-        <Text>我</Text>
-      </View>
-    );
+    const {
+            loading,
+          } = this.state;
+
+    console.log(this.state);
+
+    if (!loading) {
+      return (
+        <View className={'my-index'}>
+          <Input
+            type={'nickname'}
+            label={'昵称'}
+            placeholder={'请输入昵称'}
+          />
+          <Text>成功</Text>
+        </View>
+      );
+    } else {
+      return (
+        <View className={'my-index'}>
+          <Text>loading...</Text>
+        </View>
+      );
+    }
   }
 }
 
