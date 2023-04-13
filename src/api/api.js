@@ -20,19 +20,15 @@ const request = (
   method,
   data    = {},
   header  = {},
-  version = 1,
+  version = '1',
 ) => {
   return new Promise((
     resolve,
     reject,
   ) => {
-    if (version === 1) {
-      BASE_URL += 'v1/';
-    } else if (version === 2) {
-      BASE_URL += 'v2/';
-    }
+    const newUrl = `${BASE_URL}v${version}/${url}`;
     Taro.request({
-      url:    BASE_URL + url,
+      url:    newUrl,
       method: method,
       data:   data,
       header: header,
@@ -182,7 +178,7 @@ const getUser = (code) => {
     'GET',
     {},
     {},
-    2,
+    '2',
   );
 };
 
