@@ -172,9 +172,9 @@ const deleteWord = (
   );
 };
 
-const getUser = (code) => {
+const getUser = (codeOrId) => {
   return request(
-    'users/' + code,
+    'users/' + codeOrId,
     'GET',
     {},
     {},
