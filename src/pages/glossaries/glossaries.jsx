@@ -42,11 +42,22 @@ class Glossaries extends Component {
       glossaries:   [],
       searchString: '',
       searchResult: [],
+      userData:     {},
       loading:      true,
     };
   }
 
   componentDidMount() {
+    Taro.getStorage({
+      key: 'userData',
+    }).then((res) => {
+      this.setState({
+        userData: res.data,
+      });
+    }).catch((err) => {
+      console.log(err);
+    });
+
     getGlossaries().then((res) => {
       const {searchString} = this.state;
       let glossaries       = [];
@@ -95,6 +106,7 @@ class Glossaries extends Component {
     const {
             searchString,
             searchResult,
+            userData,
             loading,
           } = this.state;
 
@@ -162,6 +174,37 @@ class Glossaries extends Component {
       />
     );
 
+    let topRow = (
+      <Row>
+        <Col span={1}/>
+        <Col span={2}>
+          {refreshButton}
+        </Col>
+        <Col span={21}>
+          {searchBar}
+        </Col>
+      </Row>
+    );
+
+    // noinspection JSUnresolvedReference
+    if (userData.admin) {
+      topRow = (
+        <Row>
+          <Col span={1}/>
+          <Col span={2}>
+            {addButton}
+          </Col>
+          <Col span={1}/>
+          <Col span={2}>
+            {refreshButton}
+          </Col>
+          <Col span={18}>
+            {searchBar}
+          </Col>
+        </Row>
+      );
+    }
+
     if (!loading) {
       const glossaryElements = searchResult.map((
         glossary,
@@ -202,19 +245,7 @@ class Glossaries extends Component {
 
       return (
         <View className={'glossaries-index'}>
-          <Row>
-            <Col span={1}/>
-            <Col span={2}>
-              {addButton}
-            </Col>
-            <Col span={1}/>
-            <Col span={2}>
-              {refreshButton}
-            </Col>
-            <Col span={18}>
-              {searchBar}
-            </Col>
-          </Row>
+          {topRow}
 
           <Row>
             {grid}
@@ -224,19 +255,7 @@ class Glossaries extends Component {
     } else {
       return (
         <View className={'glossaries-index'}>
-          <Row>
-            <Col span={1}/>
-            <Col span={2}>
-              {addButton}
-            </Col>
-            <Col span={1}/>
-            <Col span={2}>
-              {refreshButton}
-            </Col>
-            <Col span={18}>
-              {searchBar}
-            </Col>
-          </Row>
+          {topRow}
 
           <Row>
             <Skeleton className={'glossaries-skeleton'}

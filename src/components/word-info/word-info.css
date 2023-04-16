@@ -13,7 +13,6 @@
 .word-info-index {
     margin: 1em;
 }
-
 .word-info-edit-button {
     width: 100%;
 }
@@ -22,4 +21,7 @@
     width: 100%;
 }
 
+.word-info-skeleton {
+    margin-top: 1em;
+}
 /*# sourceMappingURL=word-info.css.map */

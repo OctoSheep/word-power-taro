@@ -13,11 +13,11 @@
 
 import './word-info.less';
 
-import {Component}                          from 'react';
-import Taro                                 from '@tarojs/taro';
+import {Component} from 'react';
+import Taro        from '@tarojs/taro';
 import {
   View,
-}                                           from '@tarojs/components';
+}                  from '@tarojs/components';
 import {
   Button,
   Col,
@@ -26,8 +26,13 @@ import {
   Input,
   InputNumber,
   Row,
-}                                           from '@nutui/nutui-react-taro';
-import {createWord, deleteWord, updateWord} from '@/api/api';
+  Skeleton,
+}                  from '@nutui/nutui-react-taro';
+import {
+  createWord,
+  deleteWord,
+  updateWord,
+}                  from '@/api/api';
 
 const TRANS_MIN = 1;
 const TRANS_MAX = 9;
@@ -62,7 +67,22 @@ class WordInfo extends Component {
       ],
       buttonDisabled:      true,
       deleteDialogVisible: false,
+      userData:            {},
+      loading:             true,
     };
+  }
+
+  componentDidMount() {
+    Taro.getStorage({
+      key: 'userData',
+    }).then((res) => {
+      this.setState({
+        userData: res.data,
+        loading:  false,
+      });
+    }).catch((err) => {
+      console.log(err);
+    });
   }
 
   changeTransCount = (value) => {
@@ -388,6 +408,8 @@ class WordInfo extends Component {
             translation,
             buttonDisabled,
             deleteDialogVisible,
+            userData,
+            loading,
           } = this.state;
 
     const clearable = pageType !== 'show';
@@ -628,115 +650,135 @@ class WordInfo extends Component {
       );
     }
 
-    return (
-      <View className='word-info-index'>
-        {glossaryRow}
+    // noinspection JSUnresolvedReference
+    if (!userData.admin) {
+      submitRow = null;
+    }
 
-        <Row>
-          <Input
-            type={'digit'}
-            label={'序号'}
-            placeholder={'请输入序号'}
-            defaultValue={index}
-            clearable={clearable}
-            required={required}
-            readonly={readonly}
-            formatter={(value) => {
-              return value !== '' ? Number(value).toString() : '';
-            }}
-            formatTrigger={'onBlur'}
-            onChange={(value) => {
-              this.setButtonStatus(
-                'index',
-                value,
-              );
-            }}
-            onClear={() => {
-              this.setButtonStatus(
-                'index',
-                '',
-              );
-            }}
-          />
-        </Row>
+    if (!loading) {
+      return (
+        <View className='word-info-index'>
+          {glossaryRow}
 
-        <Row>
-          <Input
-            label={'词汇'}
-            placeholder={'请输入词汇'}
-            defaultValue={word}
-            clearable={clearable}
-            required={required}
-            readonly={readonly}
-            onChange={(value) => {
-              this.setButtonStatus(
-                'word',
-                value,
-              );
-            }}
-            onClear={() => {
-              this.setButtonStatus(
-                'word',
-                '',
-              );
-            }}
-          />
-        </Row>
+          <Row>
+            <Input
+              type={'digit'}
+              label={'序号'}
+              placeholder={'请输入序号'}
+              defaultValue={index}
+              clearable={clearable}
+              required={required}
+              readonly={readonly}
+              formatter={(value) => {
+                return value !== '' ? Number(value).toString() : '';
+              }}
+              formatTrigger={'onBlur'}
+              onChange={(value) => {
+                this.setButtonStatus(
+                  'index',
+                  value,
+                );
+              }}
+              onClear={() => {
+                this.setButtonStatus(
+                  'index',
+                  '',
+                );
+              }}
+            />
+          </Row>
 
-        <Row>
-          <Input
-            label={'英式音标'}
-            placeholder={'请输入英式音标'}
-            defaultValue={phonetic_uk}
-            clearable={clearable}
-            required={required}
-            readonly={readonly}
-            slotButton={ukButton}
-            onChange={(value) => {
-              this.setButtonStatus(
-                'phonetic_uk',
-                value,
-              );
-            }}
-            onClear={() => {
-              this.setButtonStatus(
-                'phonetic_uk',
-                '',
-              );
-            }}
-          />
-        </Row>
+          <Row>
+            <Input
+              label={'词汇'}
+              placeholder={'请输入词汇'}
+              defaultValue={word}
+              clearable={clearable}
+              required={required}
+              readonly={readonly}
+              onChange={(value) => {
+                this.setButtonStatus(
+                  'word',
+                  value,
+                );
+              }}
+              onClear={() => {
+                this.setButtonStatus(
+                  'word',
+                  '',
+                );
+              }}
+            />
+          </Row>
 
-        <Row>
-          <Input
-            label={'美式音标'}
-            placeholder={'请输入美式音标'}
-            defaultValue={phonetic_us}
-            clearable={clearable}
-            required={required}
-            readonly={readonly}
-            slotButton={usButton}
-            onChange={(value) => {
-              this.setButtonStatus(
-                'phonetic_us',
-                value,
-              );
-            }}
-            onClear={() => {
-              this.setButtonStatus(
-                'phonetic_us',
-                '',
-              );
-            }}
-          />
-        </Row>
+          <Row>
+            <Input
+              label={'英式音标'}
+              placeholder={'请输入英式音标'}
+              defaultValue={phonetic_uk}
+              clearable={clearable}
+              required={required}
+              readonly={readonly}
+              slotButton={ukButton}
+              onChange={(value) => {
+                this.setButtonStatus(
+                  'phonetic_uk',
+                  value,
+                );
+              }}
+              onClear={() => {
+                this.setButtonStatus(
+                  'phonetic_uk',
+                  '',
+                );
+              }}
+            />
+          </Row>
 
-        {transCount}
-        {translationElements}
-        {deleteDialog}
-        {submitRow}
-      </View>
-    );
+          <Row>
+            <Input
+              label={'美式音标'}
+              placeholder={'请输入美式音标'}
+              defaultValue={phonetic_us}
+              clearable={clearable}
+              required={required}
+              readonly={readonly}
+              slotButton={usButton}
+              onChange={(value) => {
+                this.setButtonStatus(
+                  'phonetic_us',
+                  value,
+                );
+              }}
+              onClear={() => {
+                this.setButtonStatus(
+                  'phonetic_us',
+                  '',
+                );
+              }}
+            />
+          </Row>
+
+          {transCount}
+          {translationElements}
+          {deleteDialog}
+          {submitRow}
+        </View>
+      );
+    } else {
+      return (
+        <View className='word-info-index'>
+          <Row>
+            <Skeleton className={'word-info-skeleton'}
+                      width={'300px'}
+                      height={'15px'}
+                      animated={true}
+                      row={3}
+            />
+          </Row>
+        </View>
+      );
+    }
   }
 }
 

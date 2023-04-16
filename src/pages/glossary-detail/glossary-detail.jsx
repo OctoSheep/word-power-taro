@@ -58,11 +58,22 @@ class GlossaryDetail extends Component {
       searchString:        '',
       currentPage:         1,
       deleteDialogVisible: false,
+      userData:            {},
       loading:             true,
     };
   }
 
   componentDidMount() {
+    Taro.getStorage({
+      key: 'userData',
+    }).then((res) => {
+      this.setState({
+        userData: res.data,
+      });
+    }).catch((err) => {
+      console.log(err);
+    });
+
     const {glossaryName} = this.state;
 
     getGlossary(glossaryName).then((res) => {
@@ -145,6 +156,7 @@ class GlossaryDetail extends Component {
             searchString,
             currentPage,
             deleteDialogVisible,
+            userData,
             loading,
           } = this.state;
 
@@ -213,6 +225,37 @@ class GlossaryDetail extends Component {
                  }}
       />
     );
+
+    let topRow = (
+      <Row>
+        <Col span={1}/>
+        <Col span={2}>
+          {refreshButton}
+        </Col>
+        <Col span={21}>
+          {searchBar}
+        </Col>
+      </Row>
+    );
+
+    // noinspection JSUnresolvedReference
+    if (userData.admin) {
+      topRow = (
+        <Row>
+          <Col span={1}/>
+          <Col span={2}>
+            {addButton}
+          </Col>
+          <Col span={1}/>
+          <Col span={2}>
+            {refreshButton}
+          </Col>
+          <Col span={18}>
+            {searchBar}
+          </Col>
+        </Row>
+      );
+    }
 
     if (!loading) {
       const totalWords = wordIds.length;
@@ -325,30 +368,11 @@ class GlossaryDetail extends Component {
         );
       }
 
-      return (
-        <View className={'glossary-index'}>
-          <Row>
-            <Col span={1}/>
-            <Col span={2}>
-              {addButton}
-            </Col>
-            <Col span={1}/>
-            <Col span={2}>
-              {refreshButton}
-            </Col>
-            <Col span={18}>
-              {searchBar}
-            </Col>
-          </Row>
+      let bottomRow = null;
 
-          <View className={'glossary-word'}
-                key={`${currentPage}_${searchString}`}
-          >{view}
-          </View>
-
-          {deleteDialog}
-          {pagination}
-
+      // noinspection JSUnresolvedReference
+      if (userData.admin) {
+        bottomRow = (
           <Row className={'glossary-bottom-row'}
                type={'flex'}
                justify={'space-around'}
@@ -360,24 +384,27 @@ class GlossaryDetail extends Component {
               {deleteButton}
             </Col>
           </Row>
+        );
+      }
+
+      return (
+        <View className={'glossary-index'}>
+          {topRow}
+
+          <View className={'glossary-word'}
+                key={`${currentPage}_${searchString}`}
+          >{view}
+          </View>
+
+          {deleteDialog}
+          {pagination}
+          {bottomRow}
         </View>
       );
     } else {
       return (
         <View className={'glossary-index'}>
-          <Row>
-            <Col span={1}/>
-            <Col span={2}>
-              {addButton}
-            </Col>
-            <Col span={1}/>
-            <Col span={2}>
-              {refreshButton}
-            </Col>
-            <Col span={18}>
-              {searchBar}
-            </Col>
-          </Row>
+          {topRow}
 
           <Row>
             <Skeleton className={'glossary-skeleton'}
