@@ -13,51 +13,56 @@
 
 import './today.less';
 
-import {Component}                            from 'react';
-import {Text, View}                           from '@tarojs/components';
-import {getGlossaries, getGlossary, getWords} from '@/api/api';
-import {Skeleton}                             from '@nutui/nutui-react-taro';
+import {Component}  from 'react';
+import {Text, View} from '@tarojs/components';
+import {getUser}    from '@/api/api';
+import {Skeleton}   from '@nutui/nutui-react-taro';
+import Taro         from '@tarojs/taro';
 
 class Today extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      words:   [],
-      loading: true,
+      userData: {},
+      loading:  true,
     };
   }
 
   componentDidMount() {
-    getGlossaries().then((glossaries) => {
-      getGlossary(glossaries.data[0].name).then((glossary) => {
-        getWords(glossary.data.name).then((words) => {
+    Taro.login().then((res) => {
+      if (res.code) {
+        getUser(res.code).then((userData) => {
           this.setState({
-            words:   words.data,
-            loading: false,
+            userData: userData.data,
+            loading:  false,
           });
+          Taro.setStorage({
+            key:  'userData',
+            data: userData.data,
+          }).catch((err) => {
+            console.log(err);
+          });
+        }).catch((err) => {
+          console.log(err);
         });
-      });
+      } else {
+        console.log('登录失败！' + res.errMsg);
+      }
+    }).catch((err) => {
+      console.log(err);
     });
   }
 
   render() {
     const {
-            words,
+            userData,
             loading,
           } = this.state;
+
     if (!loading) {
-      // noinspection JSUnresolvedVariable
       return (
         <View className={'today-index'}>
-          <Text>{`${words[0].word}`}</Text>
-          <br/>
-          <Text>{`${words[0].phonetic_uk}`}</Text>
-          <br/>
-          <Text>{`${words[0].phonetic_us}`}</Text>
-          <br/>
-          <Text>{`${words[0].translation[0].part_of_speech}`}</Text>
-          <br/>
-          <Text>{`${words[0].translation[0].definition}`}</Text>
+          <Text>{`${userData.name}`}</Text>
         </View>
       );
     } else {

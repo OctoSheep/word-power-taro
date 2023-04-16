@@ -17,31 +17,24 @@ import {Component}  from 'react';
 import {Text, View} from '@tarojs/components';
 import Taro         from '@tarojs/taro';
 import {Input}      from '@nutui/nutui-react-taro';
-import {getUser}    from '@/api/api';
 
 class My extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data:        {},
-      userInfo:    {},
-      hasUserInfo: false,
-      loading:     true,
+      userData: {},
+      loading:  true,
     };
   }
 
   componentDidMount() {
-    Taro.login().then((res) => {
-      if (res.code) {
-        getUser(res.code).then((data) => {
-          this.setState({
-            data:    data,
-            loading: false,
-          });
-        });
-      } else {
-        console.log('登录失败！' + res.errMsg);
-      }
+    Taro.getStorage({
+      key: 'userData',
+    }).then((res) => {
+      this.setState({
+        userData: res.data,
+        loading:  false,
+      });
     }).catch((err) => {
       console.log(err);
     });
@@ -49,10 +42,9 @@ class My extends Component {
 
   render() {
     const {
+            userData,
             loading,
           } = this.state;
-
-    console.log(this.state);
 
     if (!loading) {
       return (
@@ -61,6 +53,7 @@ class My extends Component {
             type={'nickname'}
             label={'昵称'}
             placeholder={'请输入昵称'}
+            defaultValue={userData.name}
           />
           <Text>成功</Text>
         </View>
