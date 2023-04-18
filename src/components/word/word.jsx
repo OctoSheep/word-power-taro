@@ -26,15 +26,21 @@ class Word extends Component {
   constructor(props) {
     super(props);
     const {
+            type,
             glossaryName,
             id,
+            date,
+            count,
             color,
           }    = this.props;
     this.state = {
+      type:         type || 'word',
       glossaryName: glossaryName || '',
       id:           id || '',
       index:        0,
       word:         'loading...',
+      date:         date || new Date(),
+      count:        count || 0,
       color:        color || randomHex(),
       loading:      true,
     };
@@ -42,22 +48,30 @@ class Word extends Component {
 
   componentDidMount() {
     const {
+            type,
             glossaryName,
             id,
           } = this.state;
-    getWords(
-      glossaryName,
-      null,
-      id,
-    ).then((res) => {
+
+    if (type === 'word') {
+      getWords(
+        glossaryName,
+        null,
+        id,
+      ).then((res) => {
+        this.setState({
+          index:   res.data[0].index,
+          word:    res.data[0].word,
+          loading: false,
+        });
+      }).catch((err) => {
+        console.log(err);
+      });
+    } else if (type === 'daily') {
       this.setState({
-        index:   res.data[0].index,
-        word:    res.data[0].word,
         loading: false,
       });
-    }).catch((err) => {
-      console.log(err);
-    });
+    }
   }
 
   getWord = (
@@ -87,10 +101,13 @@ class Word extends Component {
 
   render() {
     const {
+            type,
             glossaryName,
             id,
             index,
             word,
+            date,
+            count,
             color,
             loading,
           } = this.state;
@@ -102,9 +119,53 @@ class Word extends Component {
     const colorHsl  = hexToHsl(color);
     const bgColor   = hslToHex([colorHsl[0], colorHsl[1], 90]);
     const textColor = hslToHex([colorHsl[0], colorHsl[1], 20]);
+    const dateStr   = `${date.getMonth() + 1}月${date.getDate()}日`;
+    const countStr  = `今日已学习${count}个单词`;
+
+    let text  = null;
+    let arrow = null;
+    if (type === 'word') {
+      text  = (
+        <>
+          <Text className={'word-index-text'}
+                style={{color: bgColor}}
+          >{indexText}
+          </Text>
+          <Text className={'word-text'}
+                style={{color: textColor}}
+          >{word}
+          </Text>
+        </>
+      );
+      arrow = (
+        <>
+          <View className={'word-mask'}/>
+          <View className={'word-arrow'}>
+            <Image className={process.env.TARO_ENV === 'weapp'
+                              ? 'word-arrow-image-weapp'
+                              : 'word-arrow-image-h5'}
+                   src={right_arrow_url}
+                   svg={true}
+            />
+          </View>
+        </>
+      );
+    } else if (type === 'daily') {
+      text = (
+        <>
+          <Text className={'word-date-text'}
+                style={{color: bgColor}}
+          >{dateStr}
+          </Text>
+          <Text className={'word-count-text'}
+                style={{color: textColor}}
+          >{countStr}
+          </Text>
+        </>
+      );
+    }
 
     if (!loading) {
-      // noinspection SpellCheckingInspection
       return (
         <View className={'word-index'}
               onClick={() => {
@@ -115,23 +176,8 @@ class Word extends Component {
               }}
         ><View className={'word-container'}
                style={{borderColor: textColor}}
-        ><Text className={'word-index-text'}
-               style={{color: bgColor}}
-        >{indexText}
-        </Text>
-          <Text className={'word-text'}
-                style={{color: textColor}}
-          >{word}
-          </Text>
-          <View className={'word-mask'}/>
-          <View className={'word-arrow'}>
-            <Image className={process.env.TARO_ENV === 'weapp'
-                              ? 'word-arrow-image-weapp'
-                              : 'word-arrow-image-h5'}
-                   src={right_arrow_url}
-                   svg={true}
-            />
-          </View>
+        >{text}
+          {arrow}
         </View>
         </View>
       );

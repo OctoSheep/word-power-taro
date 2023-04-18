@@ -13,11 +13,12 @@
 
 import './today.less';
 
-import {Component}  from 'react';
-import {Text, View} from '@tarojs/components';
-import {getUser}    from '@/api/api';
-import {Skeleton}   from '@nutui/nutui-react-taro';
-import Taro         from '@tarojs/taro';
+import {Component}                         from 'react';
+import {View}                              from '@tarojs/components';
+import {getUser}                           from '@/api/api';
+import {Button, Col, Empty, Row, Skeleton} from '@nutui/nutui-react-taro';
+import Taro                                from '@tarojs/taro';
+import {Word}                              from '@/components/word/word';
 
 class Today extends Component {
   constructor(props) {
@@ -60,9 +61,47 @@ class Today extends Component {
           } = this.state;
 
     if (!loading) {
+      // noinspection JSUnresolvedReference
       return (
         <View className={'today-index'}>
-          <Text>{`${userData.name}`}</Text>
+          <Word
+            type={'daily'}
+            date={new Date(userData.date)}
+            count={userData.todayCount}
+          />
+          <Empty description={'您没有任何正在学习的词汇书'}/>
+          <Row className={'today-button-row'}
+               type={'flex'}
+               justify={'space-around'}
+          >
+            <Col span={10}>
+              <Button className={'today-edit-button'}
+                      type={'success'}
+                      icon={'edit'}
+                      onClick={() => {
+                        Taro.showToast({
+                          title: '编辑',
+                        }).catch((err) => {
+                          console.log(err);
+                        });
+                      }}
+              >编辑
+              </Button>
+            </Col>
+            <Col span={10}>
+              <Button className={'today-refresh-button'}
+                      type={'info'}
+                      icon={'refresh2'}
+                      onClick={() => {
+                        this.setState({
+                          loading: true,
+                        });
+                        this.componentDidMount();
+                      }}
+              >刷新
+              </Button>
+            </Col>
+          </Row>
         </View>
       );
     } else {
