@@ -13,12 +13,21 @@
 
 import './today.less';
 
-import {Component}                         from 'react';
-import {View}                              from '@tarojs/components';
-import {getUser}                           from '@/api/api';
-import {Button, Col, Empty, Row, Skeleton} from '@nutui/nutui-react-taro';
-import Taro                                from '@tarojs/taro';
-import {Word}                              from '@/components/word/word';
+import {Component} from 'react';
+import {View}      from '@tarojs/components';
+import {getUser}   from '@/api/api';
+import {
+  Button,
+  Col,
+  Divider,
+  Empty,
+  Row,
+  Skeleton,
+}                  from '@nutui/nutui-react-taro';
+import Taro        from '@tarojs/taro';
+import {
+  Word,
+}                  from '@/components/word/word';
 
 class Today extends Component {
   constructor(props) {
@@ -61,6 +70,23 @@ class Today extends Component {
           } = this.state;
 
     if (!loading) {
+      let glossaryElements = (
+        <Empty description={'您没有任何正在学习的词汇书'}/>
+      );
+
+      const myGlossaries = userData.glossaries;
+      if (myGlossaries.length > 0) {
+        glossaryElements = myGlossaries.map((glossary) => {
+          return (
+            <Word
+              type={'glossary'}
+              glossaryName={glossary.glossary}
+              count={glossary.count}
+            />
+          );
+        });
+      }
+
       // noinspection JSUnresolvedReference
       return (
         <View className={'today-index'}>
@@ -69,7 +95,8 @@ class Today extends Component {
             date={new Date(userData.date)}
             count={userData.todayCount}
           />
-          <Empty description={'您没有任何正在学习的词汇书'}/>
+          <Divider/>
+          {glossaryElements}
           <Row className={'today-button-row'}
                type={'flex'}
                justify={'space-around'}
@@ -79,13 +106,13 @@ class Today extends Component {
                       type={'success'}
                       icon={'edit'}
                       onClick={() => {
-                        Taro.showToast({
-                          title: '编辑',
+                        Taro.navigateTo({
+                          url: '/pages/edit-my-glossaries/edit-my-glossaries',
                         }).catch((err) => {
                           console.log(err);
                         });
                       }}
-              >编辑
+              >修改
               </Button>
             </Col>
             <Col span={10}>

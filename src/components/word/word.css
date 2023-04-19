@@ -35,7 +35,6 @@
     text-align: left;
     z-index: -1;
 }
-
 .word-date-text {
     font-size: 6em;
     font-weight: 1000;
@@ -48,7 +47,6 @@
     text-align: left;
     z-index: -1;
 }
-
 .word-text {
     font-size: 2.5em;
     font-weight: 500;
@@ -58,7 +56,6 @@
     text-align: left;
     z-index: 0;
 }
-
 .word-count-text {
     font-size: 1.5em;
     font-weight: 500;
@@ -68,7 +65,6 @@
     text-align: left;
     z-index: 0;
 }
-
 .word-mask {
     height: 100%;
     width: 100%;

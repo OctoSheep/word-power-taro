@@ -16,7 +16,7 @@ import './word.less';
 import {Component}                     from 'react';
 import {Image, Text, View}             from '@tarojs/components';
 import {hexToHsl, hslToHex, randomHex} from '@/utils/color-utils';
-import {getWords}                      from '@/api/api';
+import {getGlossaries, getWords}       from '@/api/api';
 import Taro                            from '@tarojs/taro';
 import {Skeleton}                      from '@nutui/nutui-react-taro';
 
@@ -34,15 +34,16 @@ class Word extends Component {
             color,
           }    = this.props;
     this.state = {
-      type:         type || 'word',
-      glossaryName: glossaryName || '',
-      id:           id || '',
-      index:        0,
-      word:         'loading...',
-      date:         date || new Date(),
-      count:        count || 0,
-      color:        color || randomHex(),
-      loading:      true,
+      type:                type || 'word',
+      glossaryName:        glossaryName || '',
+      glossaryDescription: '',
+      id:                  id || '',
+      index:               0,
+      word:                'loading...',
+      date:                date || new Date(),
+      count:               count || 0,
+      color:               color || randomHex(),
+      loading:             true,
     };
   }
 
@@ -70,6 +71,21 @@ class Word extends Component {
     } else if (type === 'daily') {
       this.setState({
         loading: false,
+      });
+    } else if (type === 'glossary') {
+      getGlossaries().then((res) => {
+        const glossaries = res.data;
+        for (let i = 0; i < glossaries.length; i++) {
+          if (glossaries[i].name === glossaryName) {
+            this.setState({
+              glossaryDescription: glossaries[i].description,
+              loading:             false,
+            });
+            break;
+          }
+        }
+      }).catch((err) => {
+        console.log(err);
       });
     }
   }
@@ -103,6 +119,7 @@ class Word extends Component {
     const {
             type,
             glossaryName,
+            glossaryDescription,
             id,
             index,
             word,
@@ -112,60 +129,75 @@ class Word extends Component {
             loading,
           } = this.state;
 
-    const indexText = index.toString().padStart(
-      4,
-      '0',
-    );
     const colorHsl  = hexToHsl(color);
     const bgColor   = hslToHex([colorHsl[0], colorHsl[1], 90]);
     const textColor = hslToHex([colorHsl[0], colorHsl[1], 20]);
-    const dateStr   = `${date.getMonth() + 1}月${date.getDate()}日`;
-    const countStr  = `今日已学习${count}个单词`;
-
-    let text  = null;
-    let arrow = null;
-    if (type === 'word') {
-      text  = (
-        <>
-          <Text className={'word-index-text'}
-                style={{color: bgColor}}
-          >{indexText}
-          </Text>
-          <Text className={'word-text'}
-                style={{color: textColor}}
-          >{word}
-          </Text>
-        </>
-      );
-      arrow = (
-        <>
-          <View className={'word-mask'}/>
-          <View className={'word-arrow'}>
-            <Image className={process.env.TARO_ENV === 'weapp'
-                              ? 'word-arrow-image-weapp'
-                              : 'word-arrow-image-h5'}
-                   src={right_arrow_url}
-                   svg={true}
-            />
-          </View>
-        </>
-      );
-    } else if (type === 'daily') {
-      text = (
-        <>
-          <Text className={'word-date-text'}
-                style={{color: bgColor}}
-          >{dateStr}
-          </Text>
-          <Text className={'word-count-text'}
-                style={{color: textColor}}
-          >{countStr}
-          </Text>
-        </>
-      );
-    }
 
     if (!loading) {
+      const indexText        = index.toString().padStart(
+        4,
+        '0',
+      );
+      const dateStr          = `${date.getMonth() + 1}月${date.getDate()}日`;
+      const dailyCountStr    = `今日已学习${count}个词汇`;
+      const glossaryCountStr = `已学习${count}个${glossaryDescription}`;
+
+      let text  = null;
+      let arrow = null;
+      if (type === 'word') {
+        text  = (
+          <>
+            <Text className={'word-index-text'}
+                  style={{color: bgColor}}
+            >{indexText}
+            </Text>
+            <Text className={'word-text'}
+                  style={{color: textColor}}
+            >{word}
+            </Text>
+          </>
+        );
+        arrow = (
+          <>
+            <View className={'word-mask'}/>
+            <View className={'word-arrow'}>
+              <Image className={process.env.TARO_ENV === 'weapp'
+                                ? 'word-arrow-image-weapp'
+                                : 'word-arrow-image-h5'}
+                     src={right_arrow_url}
+                     svg={true}
+              />
+            </View>
+          </>
+        );
+      } else if (type === 'daily') {
+        text = (
+          <>
+            <Text className={'word-date-text'}
+                  style={{color: bgColor}}
+            >{dateStr}
+            </Text>
+            <Text className={'word-count-text'}
+                  style={{color: textColor}}
+            >{dailyCountStr}
+            </Text>
+          </>
+        );
+      } else if (type === 'glossary') {
+        text = (
+          <>
+            <Text className={'word-date-text'}
+                  style={{color: bgColor}}
+            >{glossaryName}
+            </Text>
+            <Text className={'word-count-text'}
+                  style={{color: textColor}}
+            >{glossaryCountStr}
+            </Text>
+          </>
+        );
+      }
+
       return (
         <View className={'word-index'}
               onClick={() => {
