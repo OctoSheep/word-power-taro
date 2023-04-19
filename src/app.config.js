@@ -23,6 +23,7 @@ export default defineAppConfig({
     'pages/edit-glossary/edit-glossary',
     'pages/add-word/add-word',
     'pages/edit-word/edit-word',
+    'pages/edit-my-glossaries/edit-my-glossaries',
   ],
   tabBar: {
     list: [
