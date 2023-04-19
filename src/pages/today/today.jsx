@@ -81,7 +81,7 @@ class Today extends Component {
             <Word
               type={'glossary'}
               glossaryName={glossary.glossary}
-              count={glossary.count}
+              count={glossary.index}
             />
           );
         });

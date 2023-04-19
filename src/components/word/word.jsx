@@ -91,28 +91,33 @@ class Word extends Component {
   }
 
   getWord = (
+    type,
     glossaryName,
     id,
   ) => {
-    getWords(
-      glossaryName,
-      null,
-      id,
-    ).then(() => {
-      Taro.navigateTo({
-        url: `/pages/word-detail/word-detail?glossaryName=${glossaryName}&id=${id}`,
+    if (type === 'word') {
+      getWords(
+        glossaryName,
+        null,
+        id,
+      ).then(() => {
+        Taro.navigateTo({
+          url: `/pages/word-detail/word-detail?glossaryName=${glossaryName}&id=${id}`,
+        }).catch((err) => {
+          console.log(err);
+        });
       }).catch((err) => {
         console.log(err);
+        Taro.showToast({
+          icon:  'error',
+          title: '词汇不存在',
+        }).catch((err) => {
+          console.log(err);
+        });
       });
-    }).catch((err) => {
-      console.log(err);
-      Taro.showToast({
-        icon:  'error',
-        title: '词汇不存在',
-      }).catch((err) => {
-        console.log(err);
-      });
-    });
+    } else if (type === 'glossary') {
+      console.log(glossaryName);
+    }
   };
 
   render() {
@@ -140,7 +145,7 @@ class Word extends Component {
       );
       const dateStr          = `${date.getMonth() + 1}月${date.getDate()}日`;
       const dailyCountStr    = `今日已学习${count}个词汇`;
-      const glossaryCountStr = `已学习${count}个${glossaryDescription}`;
+      const glossaryCountStr = `${glossaryDescription}（第${count}个）`;
 
       let text  = null;
       let arrow = null;
@@ -157,6 +162,7 @@ class Word extends Component {
             </Text>
           </>
         );
+
         arrow = (
           <>
             <View className={'word-mask'}/>
@@ -196,12 +202,27 @@ class Word extends Component {
             </Text>
           </>
         );
+
+        arrow = (
+          <>
+            <View className={'word-mask'}/>
+            <View className={'word-arrow'}>
+              <Image className={process.env.TARO_ENV === 'weapp'
+                                ? 'word-arrow-image-weapp'
+                                : 'word-arrow-image-h5'}
+                     src={right_arrow_url}
+                     svg={true}
+              />
+            </View>
+          </>
+        );
       }
 
       return (
         <View className={'word-index'}
               onClick={() => {
                 this.getWord(
+                  type,
                   glossaryName,
                   id,
                 );
