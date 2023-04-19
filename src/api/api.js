@@ -182,6 +182,27 @@ const getUser = (codeOrId) => {
   );
 };
 
+const updateUser = (
+  openid,
+  name,
+  globalData,
+  glossaries,
+  todayCount,
+) => {
+  return request(
+    'users/' + openid,
+    'PATCH',
+    {
+      name:       name,
+      globalData: globalData,
+      glossaries: glossaries,
+      todayCount: todayCount,
+    },
+    {},
+    '2',
+  );
+};
+
 export {
   getGlossaries,
   getGlossary,
@@ -193,4 +214,5 @@ export {
   updateWord,
   deleteWord,
   getUser,
+  updateUser,
 };
