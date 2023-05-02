@@ -13,12 +13,12 @@
 
 import './word.less';
 
-import {Component}                     from 'react';
-import {Image, Text, View}             from '@tarojs/components';
-import {hexToHsl, hslToHex, randomHex} from '@/utils/color-utils';
-import {getGlossaries, getWords}       from '@/api/api';
-import Taro                            from '@tarojs/taro';
-import {Skeleton}                      from '@nutui/nutui-react-taro';
+import {Component}                            from 'react';
+import {Image, Text, View}                    from '@tarojs/components';
+import {hexToHsl, hslToHex, randomHex}        from '@/utils/color-utils';
+import {getGlossaries, getGlossary, getWords} from '@/api/api';
+import Taro                                   from '@tarojs/taro';
+import {Skeleton}                             from '@nutui/nutui-react-taro';
 
 const right_arrow_url = require('@/assets/images/arrow_right_FILL0_wght500_GRAD-25_opsz48.svg');
 
@@ -130,12 +130,24 @@ class Word extends Component {
     glossaryName,
     userId,
   ) => {
-    Taro.navigateTo({
-      url: `/pages/card/card?glossaryName=${glossaryName}&userId=${userId}`,
+    getGlossary(
+      glossaryName,
+    ).then(() => {
+      Taro.navigateTo({
+        url: `/pages/card/card?glossaryName=${glossaryName}&userId=${userId}`,
+      }).catch((err) => {
+        console.log(err);
+      }).catch((err) => {
+        console.log(err);
+      });
     }).catch((err) => {
       console.log(err);
-    }).catch((err) => {
-      console.log(err);
+      Taro.showToast({
+        icon:  'error',
+        title: '词汇书不存在',
+      }).catch((err) => {
+        console.log(err);
+      });
     });
   };
 
