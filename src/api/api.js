@@ -203,6 +203,16 @@ const updateUser = (
   );
 };
 
+const deleteUser = (openid) => {
+  return request(
+    'users/' + openid,
+    'DELETE',
+    {},
+    {},
+    '2',
+  );
+};
+
 const getLatestCard = (
   glossaryName,
   userId,
@@ -244,6 +254,7 @@ export {
   deleteWord,
   getUser,
   updateUser,
+  deleteUser,
   getLatestCard,
   updateCard,
 };
