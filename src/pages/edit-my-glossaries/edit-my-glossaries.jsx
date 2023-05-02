@@ -77,7 +77,7 @@ class EditMyGlossaries extends Component {
       } else {
         newGlossaries.push({
           glossary: myGlossaryNames[i],
-          index:    0,
+          index:    1,
         });
       }
     }
