@@ -13,11 +13,11 @@
 
 import './my.less';
 
-import {Component}           from 'react';
-import {Text, View}          from '@tarojs/components';
-import Taro                  from '@tarojs/taro';
-import {Button, Icon, Input} from '@nutui/nutui-react-taro';
-import {updateUser}          from '@/api/api';
+import {Component}                from 'react';
+import {Text, View}               from '@tarojs/components';
+import Taro                       from '@tarojs/taro';
+import {Button, Icon, Input, Row} from '@nutui/nutui-react-taro';
+import {updateUser}               from '@/api/api';
 
 class My extends Component {
   constructor(props) {
@@ -75,47 +75,114 @@ class My extends Component {
             loading,
           } = this.state;
 
+    const globalData = userData.globalData || {};
+
     if (!loading) {
+      // noinspection JSUnresolvedReference
       return (
         <View className={'my-index'}>
-          <Input
-            type={'nickname'}
-            label={'昵称'}
-            placeholder={'请输入昵称'}
-            defaultValue={userData.name}
-            required={true}
-            onBlur={(value) => {
-              this.setState({
-                newName: value,
-              });
-            }}
-            slotButton={
-              <Button
-                type={'primary'}
-                size={'small'}
-                onClick={() => {
-                  if (this.state.newName !== '') {
-                    this.setState({
-                      loading: true,
-                    });
-                    this.updateUser(this.state.newName);
-                  } else {
-                    Taro.showToast({
-                      title: '昵称不能为空',
-                      icon:  'error',
-                      mask:  true,
-                    }).catch((err) => {
-                      console.log(err);
-                    });
-                  }
-                }}
-              ><Icon
-                name={'checklist'}
-                size={'1em'}
-              />
-              </Button>
-            }
-          />
+          <Row>
+            <Input
+              type={'nickname'}
+              label={'昵称'}
+              placeholder={'请输入昵称'}
+              defaultValue={userData.name}
+              required={true}
+              onBlur={(value) => {
+                this.setState({
+                  newName: value,
+                });
+              }}
+              slotButton={
+                <Button
+                  type={'primary'}
+                  size={'small'}
+                  onClick={() => {
+                    if (this.state.newName !== '') {
+                      this.setState({
+                        loading: true,
+                      });
+                      this.updateUser(this.state.newName);
+                    } else {
+                      Taro.showToast({
+                        title: '昵称不能为空',
+                        icon:  'error',
+                        mask:  true,
+                      }).catch((err) => {
+                        console.log(err);
+                      });
+                    }
+                  }}
+                ><Icon
+                  name={'checklist'}
+                  size={'1em'}
+                />
+                </Button>
+              }
+            />
+          </Row>
+          <Row>
+            <Input
+              label={'今日词汇数'}
+              defaultValue={userData.todayCount || 0}
+              readonly={true}
+            />
+          </Row>
+          <Row>
+            <Input
+              label={'总学习次数'}
+              defaultValue={globalData.totalReview || 0}
+              readonly={true}
+            />
+          </Row>
+          <Row>
+            <Input
+              label={'词汇难度'} // 默认值为0
+              defaultValue={globalData.totalDiff || '暂无数据'}
+              readonly={true}
+              rightIcon={'ask2'}
+              onClickRightIcon={() => {
+                Taro.showToast({
+                  icon:  'none',
+                  title: '值越小表示记忆起来越容易',
+                }).catch((err) => {
+                  console.log(err);
+                });
+              }}
+            />
+          </Row>
+          <Row>
+            <Input
+              label={'记忆速度'}
+              defaultValue={globalData.defaultDifficulty || '暂无数据'}
+              readonly={true}
+              rightIcon={'ask2'}
+              onClickRightIcon={() => {
+                Taro.showToast({
+                  icon:  'none',
+                  title: '默认值为5，值越小表示记忆速度越快',
+                }).catch((err) => {
+                  console.log(err);
+                });
+              }}
+            />
+          </Row>
+          <Row>
+            <Input
+              label={'记忆强度'}
+              defaultValue={globalData.defaultStability || '暂无数据'}
+              readonly={true}
+              rightIcon={'ask2'}
+              onClickRightIcon={() => {
+                Taro.showToast({
+                  icon:  'none',
+                  title: '默认值为2，值越大表示记忆强度越强',
+                }).catch((err) => {
+                  console.log(err);
+                });
+              }}
+            />
+          </Row>
         </View>
       );
     } else {
