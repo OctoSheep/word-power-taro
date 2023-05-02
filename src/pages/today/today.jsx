@@ -14,9 +14,12 @@
 import './today.less';
 
 import {Component} from 'react';
-import {View}      from '@tarojs/components';
+import {
+  View,
+}                  from '@tarojs/components';
 import {getUser}   from '@/api/api';
 import {
+  Animate,
   Button,
   Col,
   Divider,
@@ -90,31 +93,35 @@ class Today extends Component {
       // noinspection JSUnresolvedReference
       return (
         <View className={'today-index'}>
-          <Word
+          <Animate
+            style={{width: '100%'}}
+            type={'shake'}
+            action={'click'}
+          ><Word
             type={'daily'}
             date={new Date(userData.date)}
             count={userData.todayCount}
           />
+          </Animate>
           <Divider/>
           {glossaryElements}
           <Row className={'today-button-row'}
                type={'flex'}
                justify={'space-around'}
-          >
-            <Col span={10}>
-              <Button className={'today-edit-button'}
-                      type={'success'}
-                      icon={'edit'}
-                      onClick={() => {
-                        Taro.navigateTo({
-                          url: '/pages/edit-my-glossaries/edit-my-glossaries',
-                        }).catch((err) => {
-                          console.log(err);
-                        });
-                      }}
-              >修改
-              </Button>
-            </Col>
+          ><Col span={10}>
+            <Button className={'today-edit-button'}
+                    type={'success'}
+                    icon={'edit'}
+                    onClick={() => {
+                      Taro.navigateTo({
+                        url: '/pages/edit-my-glossaries/edit-my-glossaries',
+                      }).catch((err) => {
+                        console.log(err);
+                      });
+                    }}
+            >修改
+            </Button>
+          </Col>
             <Col span={10}>
               <Button className={'today-refresh-button'}
                       type={'info'}

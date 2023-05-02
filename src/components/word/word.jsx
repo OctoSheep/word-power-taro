@@ -164,7 +164,7 @@ class Word extends Component {
         '0',
       );
       const dateStr          = `${date.getMonth() + 1}月${date.getDate()}日`;
-      const dailyCountStr    = `今日已学习${count}个词汇`;
+      const dailyCountStr    = `今日已学习${count}次`;
       const glossaryCountStr = `${glossaryDescription}（第${count}个）`;
 
       let text  = null;
