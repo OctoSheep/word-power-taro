@@ -193,11 +193,24 @@ const updateUser = (
     'users/' + openid,
     'PATCH',
     {
-      name:       name,
+      name: name,
       globalData: globalData,
       glossaries: glossaries,
       todayCount: todayCount,
     },
+    {},
+    '2',
+  );
+};
+
+const getLatestCard = (
+  glossaryName,
+  userId,
+) => {
+  return request(
+    'cards/' + glossaryName + '/' + userId,
+    'GET',
+    {},
     {},
     '2',
   );
@@ -215,4 +228,5 @@ export {
   deleteWord,
   getUser,
   updateUser,
+  getLatestCard,
 };
