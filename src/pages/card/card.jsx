@@ -13,13 +13,15 @@
 
 import './card.less';
 
-import {Component}                  from 'react';
-import {getCurrentInstance}         from '@tarojs/runtime';
-import {getLatestCard, getWords}    from '@/api/api';
-import {View}                       from '@tarojs/components';
-import {Button, Col, Row, Skeleton} from '@nutui/nutui-react-taro';
-import {WordInfo}                   from '@/components/word-info/word-info';
-import Taro                         from '@tarojs/taro';
+import {Component}                           from 'react';
+import {getCurrentInstance}                  from '@tarojs/runtime';
+import {getLatestCard, getWords, updateCard} from '@/api/api';
+import {View}                                from '@tarojs/components';
+import {Button, Col, Row, Skeleton}          from '@nutui/nutui-react-taro';
+import {
+  WordInfo,
+}                                            from '@/components/word-info/word-info';
+import Taro                                  from '@tarojs/taro';
 
 class Card extends Component {
   routerParams = getCurrentInstance().router.params;
@@ -29,6 +31,12 @@ class Card extends Component {
     this.state = {
       glossaryName:  this.routerParams.glossaryName,
       userId:        this.routerParams.userId,
+      wordId:        '',
+      index:         1,
+      word:          '',
+      phonetic_uk:   '',
+      phonetic_us:   '',
+      translation:   [],
       showTrans:     false,
       showSubmitRow: false,
       loading:       true,
@@ -36,6 +44,10 @@ class Card extends Component {
   }
 
   componentDidMount() {
+    this.getLatestCard();
+  }
+
+  getLatestCard = () => {
     const {
             glossaryName,
             userId,
@@ -52,6 +64,7 @@ class Card extends Component {
         res.data.wordId,
       ).then((res) => {
         const {
+                _id,
                 index,
                 word,
                 phonetic_uk,
@@ -59,6 +72,7 @@ class Card extends Component {
                 translation,
               } = res.data[0];
         this.setState({
+          wordId:      _id,
           index:       index,
           word:        word,
           phonetic_uk: phonetic_uk,
@@ -73,7 +87,30 @@ class Card extends Component {
         });
       });
     });
-  }
+  };
+
+  updateCard = (
+    grade,
+  ) => {
+    this.setState({
+      loading: true,
+    });
+
+    const {
+            wordId,
+            userId,
+          } = this.state;
+
+    updateCard(
+      wordId,
+      userId,
+      grade,
+    ).then(() => {
+      this.getLatestCard();
+    }).catch((err) => {
+      console.log(err);
+    });
+  };
 
   render() {
     const {
@@ -121,6 +158,9 @@ class Card extends Component {
               <Button
                 type={'warning'}
                 block={true}
+                onClick={() => {
+                  this.updateCard(0);
+                }}
               >遗忘
               </Button>
             </Col>
@@ -128,6 +168,9 @@ class Card extends Component {
               <Button
                 type={'info'}
                 block={true}
+                onClick={() => {
+                  this.updateCard(1);
+                }}
               >记住
               </Button>
             </Col>
@@ -135,6 +178,9 @@ class Card extends Component {
               <Button
                 type={'success'}
                 block={true}
+                onClick={() => {
+                  this.updateCard(2);
+                }}
               >容易
               </Button>
             </Col>
