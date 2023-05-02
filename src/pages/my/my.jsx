@@ -13,19 +13,31 @@
 
 import './my.less';
 
-import {Component}                from 'react';
-import {Text, View}               from '@tarojs/components';
-import Taro                       from '@tarojs/taro';
-import {Button, Icon, Input, Row} from '@nutui/nutui-react-taro';
-import {updateUser}               from '@/api/api';
+import {Component}              from 'react';
+import {
+  View,
+}                               from '@tarojs/components';
+import Taro                     from '@tarojs/taro';
+import {
+  Button,
+  Col,
+  Dialog,
+  Icon,
+  Input,
+  Row,
+  Skeleton,
+}                               from '@nutui/nutui-react-taro';
+import {deleteUser, updateUser} from '@/api/api';
 
 class My extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userData: {},
-      newName:  '',
-      loading:  true,
+      userData:             {},
+      newName:              '',
+      deleteDialogVisible:  false,
+      confirmDialogVisible: false,
+      loading:              true,
     };
   }
 
@@ -69,9 +81,29 @@ class My extends Component {
     });
   };
 
+  deleteUser = () => {
+    const {userData} = this.state;
+
+    Taro.removeStorage({
+      key: 'userData',
+    }).then(() => {
+      deleteUser(userData.openid).then(() => {
+        Taro.exitMiniProgram().catch((err) => {
+          console.log(err);
+        });
+      }).catch((err) => {
+        console.log(err);
+      });
+    }).catch((err) => {
+      console.log(err);
+    });
+  };
+
   render() {
     const {
             userData,
+            deleteDialogVisible,
+            confirmDialogVisible,
             loading,
           } = this.state;
 
@@ -123,28 +155,38 @@ class My extends Component {
           </Row>
           <Row>
             <Input
-              label={'今日词汇数'}
-              defaultValue={userData.todayCount || 0}
+              label={'今日学习次数'}
+              defaultValue={(userData.todayCount !== undefined
+                             && userData.todayCount !== null)
+                            ? userData.todayCount
+                            : 0}
               readonly={true}
             />
           </Row>
           <Row>
             <Input
-              label={'总学习次数'}
-              defaultValue={globalData.totalReview || 0}
+              label={'总复习次数'}
+              defaultValue={(globalData.totalReview !== undefined
+                             && globalData.totalReview !== null)
+                            ? globalData.totalReview
+                            : 0}
               readonly={true}
             />
           </Row>
           <Row>
             <Input
-              label={'词汇难度'} // 默认值为0
-              defaultValue={globalData.totalDiff || '暂无数据'}
+              label={'词汇难度'}
+              defaultValue={(globalData.totalDiff !== undefined
+                             && globalData.totalDiff !== null)
+                            ? globalData.totalDiff
+                            : '暂无数据'}
               readonly={true}
               rightIcon={'ask2'}
               onClickRightIcon={() => {
                 Taro.showToast({
-                  icon:  'none',
-                  title: '值越小表示记忆起来越容易',
+                  icon:     'none',
+                  duration: 3500,
+                  title:    '值越小表示记忆起来越容易',
                 }).catch((err) => {
                   console.log(err);
                 });
@@ -154,13 +196,17 @@ class My extends Component {
           <Row>
             <Input
               label={'记忆速度'}
-              defaultValue={globalData.defaultDifficulty || '暂无数据'}
+              defaultValue={(globalData.defaultDifficulty !== undefined
+                             && globalData.defaultDifficulty !== null)
+                            ? globalData.defaultDifficulty
+                            : '暂无数据'}
               readonly={true}
               rightIcon={'ask2'}
               onClickRightIcon={() => {
                 Taro.showToast({
-                  icon:  'none',
-                  title: '默认值为5，值越小表示记忆速度越快',
+                  icon:     'none',
+                  duration: 3500,
+                  title:    '初始值为5，值越小表示记忆速度越快',
                 }).catch((err) => {
                   console.log(err);
                 });
@@ -170,25 +216,96 @@ class My extends Component {
           <Row>
             <Input
               label={'记忆强度'}
-              defaultValue={globalData.defaultStability || '暂无数据'}
+              defaultValue={(globalData.defaultStability !== undefined
+                             && globalData.defaultStability !== null)
+                            ? globalData.defaultStability
+                            : '暂无数据'}
               readonly={true}
               rightIcon={'ask2'}
               onClickRightIcon={() => {
                 Taro.showToast({
-                  icon:  'none',
-                  title: '默认值为2，值越大表示记忆强度越强',
+                  icon:     'none',
+                  duration: 3500,
+                  title:    '初始值为2，值越大表示记忆强度越强',
                 }).catch((err) => {
                   console.log(err);
                 });
               }}
             />
           </Row>
+          <Dialog
+            title={'确认注销并删除您的帐号？'}
+            visible={deleteDialogVisible}
+            onOk={() => {
+              this.setState({
+                deleteDialogVisible:  false,
+                confirmDialogVisible: true,
+              });
+            }}
+            onCancel={() => {
+              this.setState({
+                deleteDialogVisible: false,
+              });
+            }}
+          >此操作将会删除您的所有数据。
+          </Dialog>
+          <Dialog
+            title={'是否真的要删除？'}
+            visible={confirmDialogVisible}
+            onOk={() => {
+              this.setState({
+                confirmDialogVisible: false,
+              });
+              this.deleteUser();
+            }}
+            onCancel={() => {
+              this.setState({
+                confirmDialogVisible: false,
+              });
+            }}
+          >此操作不可逆，请谨慎操作！
+          </Dialog>
+          <Row className={'my-bottom-row'}
+               type={'flex'}
+               justify={'space-around'}
+          >
+            <Col span={5}>
+              <Button className={'my-delete-button'}
+                      type={'danger'}
+                      block={true}
+                      onClick={() => {
+                        this.setState({
+                          deleteDialogVisible: true,
+                        });
+                      }}
+              >注销
+              </Button>
+            </Col>
+            <Col span={15}>
+              <Button className={'my-refresh-button'}
+                      type={'info'}
+                      icon={'refresh2'}
+                      onClick={() => {
+                        this.setState({
+                          loading: true,
+                        });
+                        this.componentDidMount();
+                      }}
+              >刷新
+              </Button>
+            </Col>
+          </Row>
         </View>
       );
     } else {
       return (
         <View className={'my-index'}>
-          <Text>loading...</Text>
+          <Skeleton className={'my-skeleton'}
+                    width={'300px'}
+                    height={'15px'}
+                    animated={true}
+                    row={3}
+          />
         </View>
       );
     }
