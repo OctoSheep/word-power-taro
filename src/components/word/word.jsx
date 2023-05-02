@@ -43,11 +43,22 @@ class Word extends Component {
       date:                date || new Date(),
       count:               count || 0,
       color:               color || randomHex(),
+      userData:            {},
       loading:             true,
     };
   }
 
   componentDidMount() {
+    Taro.getStorage({
+      key: 'userData',
+    }).then((res) => {
+      this.setState({
+        userData: res.data,
+      });
+    }).catch((err) => {
+      console.log(err);
+    });
+
     const {
             type,
             glossaryName,
@@ -91,33 +102,41 @@ class Word extends Component {
   }
 
   getWord = (
-    type,
     glossaryName,
     id,
   ) => {
-    if (type === 'word') {
-      getWords(
-        glossaryName,
-        null,
-        id,
-      ).then(() => {
-        Taro.navigateTo({
-          url: `/pages/word-detail/word-detail?glossaryName=${glossaryName}&id=${id}`,
-        }).catch((err) => {
-          console.log(err);
-        });
+    getWords(
+      glossaryName,
+      null,
+      id,
+    ).then(() => {
+      Taro.navigateTo({
+        url: `/pages/word-detail/word-detail?glossaryName=${glossaryName}&id=${id}`,
       }).catch((err) => {
         console.log(err);
-        Taro.showToast({
-          icon:  'error',
-          title: '词汇不存在',
-        }).catch((err) => {
-          console.log(err);
-        });
       });
-    } else if (type === 'glossary') {
-      console.log(glossaryName);
-    }
+    }).catch((err) => {
+      console.log(err);
+      Taro.showToast({
+        icon:  'error',
+        title: '词汇不存在',
+      }).catch((err) => {
+        console.log(err);
+      });
+    });
+  };
+
+  getCard = (
+    glossaryName,
+    userId,
+  ) => {
+    Taro.navigateTo({
+      url: `/pages/card/card?glossaryName=${glossaryName}&userId=${userId}`,
+    }).catch((err) => {
+      console.log(err);
+    }).catch((err) => {
+      console.log(err);
+    });
   };
 
   render() {
@@ -131,6 +150,7 @@ class Word extends Component {
             date,
             count,
             color,
+            userData,
             loading,
           } = this.state;
 
@@ -150,7 +170,7 @@ class Word extends Component {
       let text  = null;
       let arrow = null;
       if (type === 'word') {
-        text  = (
+        text = (
           <>
             <Text className={'word-index-text'}
                   style={{color: bgColor}}
@@ -221,11 +241,17 @@ class Word extends Component {
       return (
         <View className={'word-index'}
               onClick={() => {
-                this.getWord(
-                  type,
-                  glossaryName,
-                  id,
-                );
+                if (type === 'word') {
+                  this.getWord(
+                    glossaryName,
+                    id,
+                  );
+                } else if (type === 'glossary') {
+                  this.getCard(
+                    glossaryName,
+                    userData.openid,
+                  );
+                }
               }}
         ><View className={'word-container'}
                style={{borderColor: textColor}}

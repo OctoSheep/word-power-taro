@@ -24,6 +24,7 @@ export default defineAppConfig({
     'pages/add-word/add-word',
     'pages/edit-word/edit-word',
     'pages/edit-my-glossaries/edit-my-glossaries',
+    'pages/card/card',
   ],
   tabBar: {
     list: [

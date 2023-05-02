@@ -49,6 +49,7 @@ class WordInfo extends Component {
             phonetic_uk,
             phonetic_us,
             translation,
+            showTrans,
           }    = this.props;
     this.state = {
       glossaryName:        glossaryName,
@@ -65,6 +66,7 @@ class WordInfo extends Component {
           'definition':     '',
         },
       ],
+      showTrans:           showTrans,
       buttonDisabled:      true,
       deleteDialogVisible: false,
       userData:            {},
@@ -406,20 +408,21 @@ class WordInfo extends Component {
             phonetic_uk,
             phonetic_us,
             translation,
+            showTrans,
             buttonDisabled,
             deleteDialogVisible,
             userData,
             loading,
           } = this.state;
 
-    const clearable = pageType !== 'show';
-    const required  = pageType !== 'show';
-    const readonly  = pageType === 'show';
+    const clearable = pageType !== 'show' && pageType !== 'card';
+    const required  = pageType !== 'show' && pageType !== 'card';
+    const readonly  = pageType === 'show' || pageType === 'card';
 
     const innerAudioContext    = Taro.createInnerAudioContext();
     innerAudioContext.autoplay = false;
 
-    const translationElements = translation.map((
+    let translationElements = translation.map((
       trans,
       index,
     ) => {
@@ -479,6 +482,10 @@ class WordInfo extends Component {
       );
     });
 
+    if (showTrans === false) {
+      translationElements = null;
+    }
+
     const deleteDialog = (
       <Dialog
         title={`确认删除 ${word}？`}
@@ -528,7 +535,7 @@ class WordInfo extends Component {
     let transCount = null;
     let submitRow  = null;
 
-    if (pageType !== 'show') {
+    if (pageType !== 'show' && pageType !== 'card') {
       transCount = (
         <Row>
           <Input
@@ -567,7 +574,7 @@ class WordInfo extends Component {
           </Button>
         </Row>
       );
-    } else if (pageType === 'show') {
+    } else if (pageType === 'show' || pageType === 'card') {
       ukButton = (
         <Button
           type={'info'}
@@ -600,12 +607,12 @@ class WordInfo extends Component {
         </Button>
       );
 
-      submitRow = (
-        <Row
-          type={'flex'}
-          justify={'space-around'}
-        >
-          <Col span={10}>
+      if (pageType === 'show') {
+        submitRow = (
+          <Row
+            type={'flex'}
+            justify={'space-around'}
+          ><Col span={10}>
             <Button className={'word-info-edit-button'}
                     type={'info'}
                     icon={'edit'}
@@ -619,20 +626,21 @@ class WordInfo extends Component {
             >编辑
             </Button>
           </Col>
-          <Col span={10}>
-            <Button className={'word-info-delete-button'}
-                    type={'danger'}
-                    icon={'del'}
-                    onClick={() => {
-                      this.setState({
-                        deleteDialogVisible: true,
-                      });
-                    }}
-            >删除
-            </Button>
-          </Col>
-        </Row>
-      );
+            <Col span={10}>
+              <Button className={'word-info-delete-button'}
+                      type={'danger'}
+                      icon={'del'}
+                      onClick={() => {
+                        this.setState({
+                          deleteDialogVisible: true,
+                        });
+                      }}
+              >删除
+              </Button>
+            </Col>
+          </Row>
+        );
+      }
     } else if (pageType === 'edit') {
       submitRow = (
         <Row>
