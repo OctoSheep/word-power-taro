@@ -17,7 +17,7 @@ import {Component}                           from 'react';
 import {getCurrentInstance}                  from '@tarojs/runtime';
 import {getLatestCard, getWords, updateCard} from '@/api/api';
 import {View}                                from '@tarojs/components';
-import {Button, Col, Row, Skeleton}          from '@nutui/nutui-react-taro';
+import {Button, Col, Empty, Row, Skeleton}   from '@nutui/nutui-react-taro';
 import {
   WordInfo,
 }                                            from '@/components/word-info/word-info';
@@ -39,6 +39,7 @@ class Card extends Component {
       translation:   [],
       showTrans:     false,
       showSubmitRow: false,
+      empty:         false,
       loading:       true,
     };
   }
@@ -86,6 +87,14 @@ class Card extends Component {
           console.log(err);
         });
       });
+    }).catch((err) => {
+      console.log(err);
+      if (err.status === 404) {
+        this.setState({
+          empty:   true,
+          loading: false,
+        });
+      }
     });
   };
 
@@ -122,6 +131,7 @@ class Card extends Component {
             phonetic_us,
             translation,
             showTrans,
+            empty,
             loading,
           } = this.state;
 
@@ -189,8 +199,8 @@ class Card extends Component {
         );
       }
 
-      return (
-        <View className={'card-index'}>
+      let info = (
+        <>
           <WordInfo
             key={`${wordId}${showTrans}`}
             glossaryName={glossaryName}
@@ -204,6 +214,20 @@ class Card extends Component {
             showTrans={showTrans}
           />
           {submitRow}
+        </>
+      );
+
+      if (empty) {
+        info = (
+          <Empty
+            description={'当前暂无需要复习的词汇'}
+          />
+        );
+      }
+
+      return (
+        <View className={'card-index'}>
+          {info}
         </View>
       );
     } else {
