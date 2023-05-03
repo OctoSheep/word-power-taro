@@ -13,11 +13,11 @@
 
 import './my.less';
 
-import {Component}              from 'react';
+import {Component}                       from 'react';
 import {
   View,
-}                               from '@tarojs/components';
-import Taro                     from '@tarojs/taro';
+}                                        from '@tarojs/components';
+import Taro                              from '@tarojs/taro';
 import {
   Button,
   Col,
@@ -26,8 +26,8 @@ import {
   Input,
   Row,
   Skeleton,
-}                               from '@nutui/nutui-react-taro';
-import {deleteUser, updateUser} from '@/api/api';
+}                                        from '@nutui/nutui-react-taro';
+import {deleteUser, getUser, updateUser} from '@/api/api';
 
 class My extends Component {
   constructor(props) {
@@ -45,9 +45,19 @@ class My extends Component {
     Taro.getStorage({
       key: 'userData',
     }).then((res) => {
-      this.setState({
-        userData: res.data,
-        loading:  false,
+      getUser(res.data.openid).then((userData) => {
+        Taro.setStorage({
+          key:  'userData',
+          data: userData.data,
+        }).catch((err) => {
+          console.log(err);
+        });
+        this.setState({
+          userData: userData.data,
+          loading:  false,
+        });
+      }).catch((err) => {
+        console.log(err);
       });
     }).catch((err) => {
       console.log(err);
