@@ -59,7 +59,13 @@ class Today extends Component {
           console.log(err);
         });
       } else {
-        console.log('登录失败！' + res.errMsg);
+        console.log('登录失败！');
+        Taro.showToast({
+          icon:  'error',
+          title: '登录失败！',
+        }).catch((err) => {
+          console.log(err);
+        });
       }
     }).catch((err) => {
       console.log(err);
@@ -93,10 +99,9 @@ class Today extends Component {
       // noinspection JSUnresolvedReference
       return (
         <View className={'today-index'}>
-          <Animate
-            style={{width: '100%'}}
-            type={'shake'}
-            action={'click'}
+          <Animate className={'today-animate'}
+                   type={'shake'}
+                   action={'click'}
           ><Word
             type={'daily'}
             date={new Date(userData.date)}

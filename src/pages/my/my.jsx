@@ -155,7 +155,17 @@ class My extends Component {
           </Row>
           <Row>
             <Input
-              label={'今日学习次数'}
+              label={'总学习词汇'}
+              defaultValue={(userData.totalCount !== undefined
+                             && userData.totalCount !== null)
+                            ? userData.totalCount
+                            : 0}
+              readonly={true}
+            />
+          </Row>
+          <Row>
+            <Input
+              label={'今日学习词汇'}
               defaultValue={(userData.todayCount !== undefined
                              && userData.todayCount !== null)
                             ? userData.todayCount

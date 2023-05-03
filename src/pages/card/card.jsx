@@ -175,7 +175,7 @@ class Card extends Component {
                 onClick={() => {
                   this.updateCard(0);
                 }}
-              >遗忘
+              >困难
               </Button>
             </Col>
             <Col span={6}>
