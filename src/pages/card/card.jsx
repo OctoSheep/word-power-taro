@@ -115,6 +115,10 @@ class Card extends Component {
       userId,
       grade,
     ).then(() => {
+      this.setState({
+        showTrans:     false,
+        showSubmitRow: false,
+      });
       this.getLatestCard();
     }).catch((err) => {
       console.log(err);
