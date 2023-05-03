@@ -82,13 +82,21 @@ class EditMyGlossaries extends Component {
       }
     }
 
+    userData.glossaries = newGlossaries;
+
     updateUser(
       userData.openid,
       userData.name,
       userData.globalData,
-      newGlossaries,
+      userData.glossaries,
       userData.todayCount,
     ).then(() => {
+      Taro.setStorage({
+        key:  'userData',
+        data: userData,
+      }).catch((err) => {
+        console.log(err);
+      });
       Taro.showToast({
         icon:  'success',
         title: '修改成功',
