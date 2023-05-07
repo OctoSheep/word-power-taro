@@ -37,6 +37,7 @@ class My extends Component {
       newName:              '',
       deleteDialogVisible:  false,
       confirmDialogVisible: false,
+      buttonDisabled:       true,
       loading:              true,
     };
   }
@@ -52,9 +53,11 @@ class My extends Component {
         }).catch((err) => {
           console.log(err);
         });
+        // noinspection JSUnresolvedReference
         this.setState({
-          userData: userData.data,
-          loading:  false,
+          userData:       userData.data,
+          buttonDisabled: userData.data.admin,
+          loading:        false,
         });
       }).catch((err) => {
         console.log(err);
@@ -114,6 +117,7 @@ class My extends Component {
             userData,
             deleteDialogVisible,
             confirmDialogVisible,
+            buttonDisabled,
             loading,
           } = this.state;
 
@@ -293,6 +297,7 @@ class My extends Component {
               <Button className={'my-delete-button'}
                       type={'danger'}
                       block={true}
+                      disabled={buttonDisabled}
                       onClick={() => {
                         this.setState({
                           deleteDialogVisible: true,
